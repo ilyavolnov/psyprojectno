@@ -1,0 +1,15 @@
+{
+  "name": "margarita-rumyantseva-website",
+  "version": "1.0.0",
+  "description": "Awwwards-worthy website for psychotherapist Margarita Rumyantseva",
+  "scripts": {
+    "dev": "npx live-server --port=3000 --open=/ --watch=.",
+    "start": "npm run dev"
+  },
+  "keywords": ["website", "psychotherapy", "awwwards"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
