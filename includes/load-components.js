@@ -24,6 +24,7 @@
             if (placeholder) {
                 // Update paths in header HTML
                 const updatedHtml = html
+                    .replace(/href="index\.html#courses"/g, `href="${basePath}index.html#courses"`)
                     .replace(/href="index\.html"/g, `href="${basePath}index.html"`)
                     .replace(/href="pages\/specialists\/specialists\.html"/g, `href="${basePath}pages/specialists/specialists.html"`)
                     .replace(/href="pages\/supervisions\/supervision\.html"/g, `href="${basePath}pages/supervisions/supervision.html"`)
