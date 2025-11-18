@@ -1,6 +1,13 @@
 // Supervisions Loader - Loads supervisions from API
 
 async function loadSupervisions() {
+    // Skip loading if supervisions are already in HTML
+    const container = document.querySelector('.supervision-grid');
+    if (!container || container.children.length > 0) {
+        console.log('Supervisions already loaded from HTML');
+        return;
+    }
+    
     try {
         const response = await fetch('http://localhost:3001/api/supervisions');
         const data = await response.json();
