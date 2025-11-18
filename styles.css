@@ -6328,3 +6328,42 @@ textarea.order-form-input {
         font-size: 18px;
     }
 }
+
+/* Additional Supervision Popup Styles */
+.popup-features-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.popup-features-list li {
+    padding: 10px 0 10px 30px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.popup-features-list li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #97C2EC;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.popup-bonus {
+    background: #E8F4FD;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    color: #1F1F1F;
+    text-align: center;
+}
+
+.popup-info-value small {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    font-weight: normal;
+    margin-top: 5px;
+}
