@@ -1,7 +1,24 @@
 // Supervision Popup Handler
 
-// Supervision data
-const supervisionsData = {
+// Load supervisions from API
+let supervisionsData = {};
+
+// Fetch supervisions from backend
+async function loadSupervisionsFromAPI() {
+    try {
+        const response = await fetch('http://localhost:3001/api/supervisions');
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            // Convert array to object with id as key
+            result.data.forEach(supervision => {
+                supervisionsData[supervision.id] = supervision;
+            });
+        }
+    } catch (error) {
+        console.error('Error loading supervisions:', error);
+        // Fallback to hardcoded data
+        supervisionsData = {
     1: {
         title: 'Супервизия в EMDR-подходе с Натальей С.',
         supervisors: 'Наталья С.',
@@ -78,7 +95,9 @@ const supervisionsData = {
             'Индивидуальный подход'
         ]
     }
-};
+        };
+    }
+}
 
 // Open supervision popup
 function openSupervisionPopup(supervisionId) {
@@ -139,6 +158,9 @@ function populateSupervisionPopup(supervision) {
         window.open('https://wa.me/79211880755', '_blank');
     };
 }
+
+// Load supervisions on page load
+loadSupervisionsFromAPI();
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {

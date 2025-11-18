@@ -10,9 +10,7 @@ router.get('/supervisions', async (req, res) => {
         // Parse JSON fields
         const parsedSupervisions = supervisions.map(supervision => ({
             ...supervision,
-            tags: supervision.tags ? JSON.parse(supervision.tags) : [],
-            description: supervision.description ? JSON.parse(supervision.description) : [],
-            education: supervision.education ? JSON.parse(supervision.education) : []
+            features: supervision.features ? JSON.parse(supervision.features) : []
         }));
 
         res.json({
@@ -42,9 +40,7 @@ router.get('/supervisions/:id', async (req, res) => {
         }
 
         // Parse JSON fields
-        supervision.tags = supervision.tags ? JSON.parse(supervision.tags) : [];
-        supervision.description = supervision.description ? JSON.parse(supervision.description) : [];
-        supervision.education = supervision.education ? JSON.parse(supervision.education) : [];
+        supervision.features = supervision.features ? JSON.parse(supervision.features) : [];
 
         res.json({
             success: true,
@@ -63,31 +59,31 @@ router.get('/supervisions/:id', async (req, res) => {
 router.post('/supervisions', async (req, res) => {
     try {
         const {
-            name, title, image, price, duration, experience,
-            tags, description, education, status
+            title, supervisors, date, experience, price, duration,
+            price_note, description, features, bonus, status
         } = req.body;
 
-        if (!name || !title) {
+        if (!title) {
             return res.status(400).json({
                 success: false,
-                error: 'Name and title are required'
+                error: 'Title is required'
             });
         }
 
         const query = `
             INSERT INTO supervisions (
-                name, title, image, price, duration, experience,
-                tags, description, education, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                title, supervisors, date, experience, price, duration,
+                price_note, description, features, bonus, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const result = await prepare(query).run(
-            name, title, image || '', price || 0, duration || '',
-            experience || '', 
-            tags ? JSON.stringify(tags) : '[]',
-            description ? JSON.stringify(description) : '[]',
-            education ? JSON.stringify(education) : '[]',
-            status || 'available'
+            title, supervisors || '', date || null, experience || '',
+            price || 0, duration || '', price_note || null,
+            description || '', 
+            features ? JSON.stringify(features) : '[]',
+            bonus || null,
+            status || 'active'
         );
 
         saveDatabase();
@@ -116,7 +112,7 @@ router.put('/supervisions/:id', async (req, res) => {
         const values = [];
 
         Object.keys(updates).forEach(key => {
-            if (key === 'tags' || key === 'description' || key === 'education') {
+            if (key === 'features') {
                 fields.push(`${key} = ?`);
                 values.push(JSON.stringify(updates[key]));
             } else if (updates[key] !== undefined) {
