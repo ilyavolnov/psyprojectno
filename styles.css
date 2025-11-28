@@ -3152,21 +3152,95 @@ pecialists Page */
 
 @media (max-width: 768px) {
     .specialists-hero {
-        margin-top: 100px;
-        padding: 40px 0 30px;
+        margin-top: 80px;
+        padding: 30px 0 20px;
+    }
+
+    .specialists-hero-title {
+        font-size: 36px;
+        margin-bottom: 15px;
+    }
+
+    .specialists-hero-subtitle {
+        font-size: 16px;
+    }
+
+    .specialists-section {
+        padding: 40px 0 80px;
     }
 
     .specialists-grid {
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 25px;
+    }
+
+    .specialist-card {
+        border-radius: 20px;
+    }
+
+    .specialist-photo {
+        height: 280px;
+    }
+
+    .status-badge {
+        top: 12px;
+        right: 12px;
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
+    .specialist-info {
+        padding: 25px;
+    }
+
+    .specialist-name {
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+
+    .specialist-role {
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+
+    .specialist-specialization {
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+
+    .spec-tag {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+
+    .specialist-experience {
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+
+    .specialist-price {
+        font-size: 22px;
+        margin-bottom: 15px;
     }
 
     .specialist-actions {
         flex-direction: column;
+        gap: 8px;
     }
 
     .specialist-btn {
         width: 100%;
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+
+    .specialists-load-more {
+        margin-top: 50px;
+    }
+
+    .load-more-btn {
+        padding: 14px 36px;
+        font-size: 15px;
     }
 }
 
@@ -3507,56 +3581,168 @@ pecialists Page */
 }
 
 @media (max-width: 768px) {
+    .banners-section {
+        padding: 30px 0;
+    }
+
     .banners-slider {
-        height: 700px;
+        height: auto;
+        min-height: 500px;
     }
 
     .banner-slide {
-        padding: 40px 30px;
+        padding: 30px 20px;
+        height: auto;
+        min-height: 500px;
+    }
+
+    .banner-title {
+        font-size: 28px;
+        margin-bottom: 12px;
+    }
+
+    .banner-subtitle {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .banner-description {
+        font-size: 14px;
+        line-height: 1.6;
     }
 
     .therapists-info {
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 25px;
+        margin: 20px 0;
+    }
+
+    .therapist-item h4 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .therapist-item li {
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 6px;
     }
 
     .banner-actions {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
+        align-items: stretch;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .banner-price {
+        font-size: 28px;
+        text-align: center;
     }
 
     .banner-buttons {
         width: 100%;
         flex-direction: column;
+        gap: 10px;
     }
 
     .banner-btn {
         width: 100%;
+        padding: 14px 30px;
+        font-size: 15px;
     }
     
     .banner-cloud-1 {
-        width: 120px;
-        left: 10px;
-        top: 30px;
+        width: 100px;
+        left: 5px;
+        top: 20px;
+        opacity: 0.5;
     }
     
     .banner-cloud-2 {
-        width: 150px;
-        right: -30px;
-        bottom: 10%;
+        width: 120px;
+        right: -20px;
+        bottom: 5%;
+        opacity: 0.4;
     }
     
     .banner-cloud-on-card {
-        width: 150px;
-        top: -30px;
-        left: 10px;
+        width: 120px;
+        top: -20px;
+        left: 5px;
+        opacity: 0.6;
+    }
+
+    .banner-controls {
+        margin-top: 20px;
+        gap: 15px;
+    }
+
+    .banner-prev,
+    .banner-next {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
     }
 }
 
 @media (max-width: 1024px) {
     .specialists-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+
+    .specialist-card {
+        border-radius: 25px;
+    }
+
+    .specialist-photo {
+        height: 280px;
+    }
+
+    .specialist-info {
+        padding: 25px;
+    }
+
+    .specialist-name {
+        font-size: 24px;
+    }
+
+    .specialist-role {
+        font-size: 15px;
+    }
+
+    .spec-tag {
+        font-size: 13px;
+        padding: 7px 14px;
+    }
+
+    .banners-slider {
+        height: 550px;
+    }
+
+    .banner-slide {
+        padding: 50px 40px;
+    }
+
+    .banner-title {
+        font-size: 36px;
+    }
+
+    .banner-subtitle {
+        font-size: 18px;
+    }
+
+    .therapists-info {
+        gap: 30px;
+    }
+
+    .therapist-item h4 {
+        font-size: 20px;
+    }
+
+    .therapist-item li {
+        font-size: 14px;
     }
 }
 
@@ -7322,5 +7508,130 @@ textarea.order-form-input {
 
     .author-role {
         font-size: 13px;
+    }
+
+    /* Specialists Page - Small Mobile */
+    .specialists-hero {
+        margin-top: 70px;
+        padding: 25px 0 15px;
+    }
+
+    .specialists-hero-title {
+        font-size: 32px;
+    }
+
+    .specialists-hero-subtitle {
+        font-size: 15px;
+    }
+
+    .specialists-section {
+        padding: 30px 0 60px;
+    }
+
+    .specialists-grid {
+        gap: 20px;
+    }
+
+    .specialist-card {
+        border-radius: 18px;
+    }
+
+    .specialist-photo {
+        height: 250px;
+    }
+
+    .status-badge {
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+
+    .specialist-info {
+        padding: 20px;
+    }
+
+    .specialist-name {
+        font-size: 22px;
+    }
+
+    .specialist-role {
+        font-size: 14px;
+    }
+
+    .spec-tag {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .specialist-experience {
+        font-size: 14px;
+    }
+
+    .specialist-price {
+        font-size: 20px;
+    }
+
+    .specialist-btn {
+        padding: 11px 18px;
+        font-size: 14px;
+    }
+
+    /* Banners - Small Mobile */
+    .banners-section {
+        padding: 20px 0;
+    }
+
+    .banners-slider {
+        min-height: 450px;
+    }
+
+    .banner-slide {
+        padding: 25px 15px;
+        min-height: 450px;
+        border-radius: 20px;
+    }
+
+    .banner-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .banner-subtitle {
+        font-size: 15px;
+        margin-bottom: 18px;
+    }
+
+    .banner-description {
+        font-size: 13px;
+    }
+
+    .therapist-item h4 {
+        font-size: 17px;
+    }
+
+    .therapist-item li {
+        font-size: 13px;
+        padding-left: 18px;
+    }
+
+    .banner-price {
+        font-size: 24px;
+    }
+
+    .banner-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+
+    .banner-cloud-1,
+    .banner-cloud-2,
+    .banner-cloud-on-card {
+        display: none;
+    }
+
+    .load-more-btn {
+        padding: 12px 30px;
+        font-size: 14px;
     }
 }
