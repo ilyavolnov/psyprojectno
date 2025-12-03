@@ -227,7 +227,11 @@ function openSupervisionRequestForm(supervision) {
         };
         
         try {
-            const response = await fetch('http://localhost:3001/api/requests', {
+            const API_URL = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3001/api' 
+                : '/api';
+            
+            const response = await fetch(`${API_URL}/requests`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

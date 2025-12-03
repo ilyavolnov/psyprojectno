@@ -1,33 +1,13 @@
 // API Configuration
 const API_CONFIG = {
-    // Автоматически определяем URL API
-    baseURL: window.location.hostname === 'localhost' 
-        ? 'http://localhost:3001'
-        : window.location.origin,
-    
-    // Endpoints
-    endpoints: {
-        specialists: '/api/specialists',
-        courses: '/api/courses',
-        supervisions: '/api/supervisions',
-        requests: '/api/requests',
-        promoCodes: '/api/promo-codes',
-        settings: '/api/settings',
-        upload: '/api/upload'
+    getBaseURL: function() {
+        // В продакшене используем относительные пути
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            return 'http://localhost:3001/api';
+        }
+        return '/api';
     }
 };
 
-// Helper function для API запросов
-window.apiRequest = async function(endpoint, options = {}) {
-    const url = `${API_CONFIG.baseURL}${endpoint}`;
-    
-    const defaultOptions = {
-        headers: {
-            'Content-Type': 'application/json',
-            ...options.headers
-        }
-    };
-    
-    const response = await fetch(url, { ...defaultOptions, ...options });
-    return response.json();
-};
+// Export for use in other files
+window.API_CONFIG = API_CONFIG;
