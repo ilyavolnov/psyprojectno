@@ -138,13 +138,15 @@ router.post('/courses', async (req, res) => {
             });
         }
 
+        const slug = generateSlug(title);
+
         const query = `
             INSERT INTO courses (
                 title, subtitle, description, price, status, image,
                 release_date, access_duration, feedback_duration,
                 has_certificate, whatsapp_number, topics, bonuses,
-                materials, author_name, author_description, page_blocks, type
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                materials, author_name, author_description, page_blocks, type, slug, start_date
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const result = await prepare(query).run(
@@ -154,7 +156,9 @@ router.post('/courses', async (req, res) => {
             topics ? JSON.stringify(topics) : '[]',
             bonuses, materials, author_name, author_description,
             page_blocks || '[]',
-            type || 'course'
+            type || 'course',
+            slug,
+            start_date || null
         );
 
         saveDatabase();
