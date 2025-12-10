@@ -14,8 +14,63 @@
 </head>
 
 <body>
-    <!-- Header -->
-    <div id="header-placeholder"></div>
+    <!-- Static Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../../index.html" class="logo">
+                    <h1>Маргарита Румянцева</h1>
+                    <p class="subtitle">Врач-психотерапевт, которому доверяют</p>
+                </a>
+                <nav class="nav">
+                    <a href="../../pages/courses/courses.html" class="nav-link">Курсы и вебинары</a>
+                    <a href="../../pages/specialists/specialists.html" class="nav-link">Специалисты</a>
+                    <a href="../../pages/supervisions/supervision.html" class="nav-link">Супервизии</a>
+                    <a href="../../pages/certificates/certificates.html" class="nav-link">Сертификаты</a>
+                </nav>
+                <button class="cta-button" onclick="openConsultationPopup()">Записаться на консультацию</button>
+                <button class="burger-menu" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        // Burger menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const burgerMenu = document.querySelector('.burger-menu');
+            const nav = document.querySelector('.nav');
+
+            if (burgerMenu && nav) {
+                burgerMenu.addEventListener('click', () => {
+                    burgerMenu.classList.toggle('active');
+                    nav.classList.toggle('active');
+                    document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+                });
+
+                // Close menu when clicking on a link
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        burgerMenu.classList.remove('active');
+                        nav.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!nav.contains(e.target) && !burgerMenu.contains(e.target) && nav.classList.contains('active')) {
+                        burgerMenu.classList.remove('active');
+                        nav.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+        });
+    </script>
 
     <!-- Supervision Section -->
     <section class="courses-section">
@@ -180,6 +235,54 @@
                     <button class="supervision-popup-btn" id="popupPayButton">Оплатить</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Consultation Popup -->
+    <div class="popup-overlay" id="consultationPopup">
+        <div class="popup-content">
+            <button class="popup-close" id="closePopup">&times;</button>
+            <h2 class="popup-title">Оставить заявку</h2>
+            <p class="popup-subtitle">Заполните форму, и мы свяжемся с вами в течение 24 часов</p>
+
+            <form class="popup-form" id="consultationForm">
+                <div class="form-group">
+                    <label for="name">Ваше имя *</label>
+                    <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Телефон *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+7 (___) ___-__-__">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="example@mail.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="requestType">Тип заявки *</label>
+                    <select id="requestType" name="requestType" required>
+                        <option value="">Выберите тип заявки</option>
+                        <option value="urgent">Срочная консультация</option>
+                        <option value="family">Семейная сессия в 4 руки</option>
+                        <option value="specialist">Запись к специалисту</option>
+                        <option value="consultation">Консультация</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Комментарий</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Расскажите о вашем запросе"></textarea>
+                </div>
+
+                <button type="submit" class="popup-submit-btn">
+                    <span>Отправить заявку</span>
+                </button>
+
+                <p class="popup-privacy">Нажимая кнопку, вы соглашаетесь с <a href="../../privacy-policy.html">политикой конфиденциальности</a></p>
+            </form>
         </div>
     </div>
 

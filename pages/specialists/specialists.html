@@ -14,8 +14,63 @@
 </head>
 
 <body>
-    <!-- Header -->
-    <div id="header-placeholder"></div>
+    <!-- Static Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../../index.html" class="logo">
+                    <h1>Маргарита Румянцева</h1>
+                    <p class="subtitle">Врач-психотерапевт, которому доверяют</p>
+                </a>
+                <nav class="nav">
+                    <a href="../../pages/courses/courses.html" class="nav-link">Курсы и вебинары</a>
+                    <a href="../../pages/specialists/specialists.html" class="nav-link">Специалисты</a>
+                    <a href="../../pages/supervisions/supervision.html" class="nav-link">Супервизии</a>
+                    <a href="../../pages/certificates/certificates.html" class="nav-link">Сертификаты</a>
+                </nav>
+                <button class="cta-button" onclick="openConsultationPopup()">Записаться на консультацию</button>
+                <button class="burger-menu" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        // Burger menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const burgerMenu = document.querySelector('.burger-menu');
+            const nav = document.querySelector('.nav');
+
+            if (burgerMenu && nav) {
+                burgerMenu.addEventListener('click', () => {
+                    burgerMenu.classList.toggle('active');
+                    nav.classList.toggle('active');
+                    document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+                });
+
+                // Close menu when clicking on a link
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        burgerMenu.classList.remove('active');
+                        nav.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!nav.contains(e.target) && !burgerMenu.contains(e.target) && nav.classList.contains('active')) {
+                        burgerMenu.classList.remove('active');
+                        nav.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+        });
+    </script>
 
     <!-- Specialists Hero -->
     <section class="specialists-hero">
@@ -35,13 +90,13 @@
         <!-- Decorative clouds -->
         <img src="../../images/form/cloud.png" alt="" class="banner-cloud-1" data-parallax>
         <img src="../../images/form/cloud.png" alt="" class="banner-cloud-2" data-parallax>
-        
+
         <div class="container">
             <div class="banners-slider">
                 <div class="banner-slide">
                     <!-- Cloud on banner card -->
                     <img src="../../images/form/cloud.png" alt="" class="banner-cloud-on-card">
-                    
+
                     <div class="banner-content">
                         <h2 class="banner-title">Нужна срочная консультация?</h2>
                         <p class="banner-subtitle">Оставьте заявку, и мы подберем специалиста в течение 24 часов</p>
@@ -54,7 +109,7 @@
                 <div class="banner-slide">
                     <!-- Cloud on banner card -->
                     <img src="../../images/form/cloud.png" alt="" class="banner-cloud-on-card">
-                    
+
                     <div class="banner-content family-session">
                         <h2 class="banner-title">Семейная сессия в 4 руки</h2>
                         <p class="banner-subtitle">2 партнёра + 2 опытных семейных терапевта</p>
@@ -81,7 +136,6 @@
                         <div class="banner-actions">
                             <p class="banner-price">69000 ₽</p>
                             <div class="banner-buttons">
-                                <button class="banner-btn banner-btn-outline">Подробнее</button>
                                 <button class="banner-btn banner-btn-primary">Записаться</button>
                             </div>
                         </div>
@@ -91,13 +145,13 @@
                 <div class="banner-slide">
                     <!-- Cloud on banner card -->
                     <img src="../../images/form/cloud.png" alt="" class="banner-cloud-on-card">
-                    
+
                     <div class="banner-content">
                         <h2 class="banner-title">Супервизии со специалистом</h2>
                         <p class="banner-subtitle">Профессиональная поддержка для психологов и психотерапевтов</p>
                         <p class="banner-description">Индивидуальные и групповые супервизии с опытными специалистами. Разбор сложных случаев, профессиональный рост и поддержка в работе.</p>
                         <div class="banner-buttons" style="justify-content: center; margin-top: 30px;">
-                            <button class="banner-btn banner-btn-primary" onclick="window.location.href='supervision.html'">
+                            <button class="banner-btn banner-btn-primary" onclick="window.location.href='../../pages/supervisions/supervision.html'">
                                 <span>Смотреть все супервизии</span>
                             </button>
                         </div>
@@ -134,23 +188,23 @@
             <button class="popup-close" id="closePopup">&times;</button>
             <h2 class="popup-title">Оставить заявку</h2>
             <p class="popup-subtitle">Заполните форму, и мы свяжемся с вами в течение 24 часов</p>
-            
+
             <form class="popup-form" id="consultationForm">
                 <div class="form-group">
                     <label for="name">Ваше имя *</label>
                     <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="phone">Телефон *</label>
                     <input type="tel" id="phone" name="phone" required placeholder="+7 (___) ___-__-__">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" placeholder="example@mail.com">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="requestType">Тип заявки *</label>
                     <select id="requestType" name="requestType" required>
@@ -160,16 +214,16 @@
                         <option value="specialist">Запись к специалисту</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="message">Комментарий</label>
                     <textarea id="message" name="message" rows="4" placeholder="Расскажите о вашем запросе"></textarea>
                 </div>
-                
+
                 <button type="submit" class="popup-submit-btn">
                     <span>Отправить заявку</span>
                 </button>
-                
+
                 <p class="popup-privacy">Нажимая кнопку, вы соглашаетесь с <a href="privacy-policy.html">политикой конфиденциальности</a></p>
             </form>
         </div>
