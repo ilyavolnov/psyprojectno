@@ -1,0 +1,18 @@
+# /etc/nginx/sites-available/psyproject-ssl-setup
+# Временная конфигурация для получения SSL сертификатов
+
+server {
+    listen 80;
+    server_name your-domain.com www.your-domain.com;  # Замените на ваш домен
+
+    # Для проверки домена при получении SSL сертификата через Let's Encrypt
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+        allow all;
+    }
+
+    # Все остальные запросы будут перенаправлены на HTTPS
+    location / {
+        return 301 https://$server_name$request_uri;
+    }
+}
