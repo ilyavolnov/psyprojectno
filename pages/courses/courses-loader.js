@@ -40,9 +40,11 @@ async function loadCourses() {
                 
                 itemElement.style.cursor = 'pointer';
                 itemElement.addEventListener('click', () => {
-                    const targetUrl = item.slug 
-                        ? `../../course-page.html?slug=${item.slug}`
-                        : `../../course-page.html?id=${item.id}`;
+                    // Determine the correct path based on current location (relative to root)
+                    const basePath = window.location.pathname.includes('/pages/') ? '../..' : '.';
+                    const targetUrl = item.slug
+                        ? `${basePath}/course-page.html?slug=${item.slug}`
+                        : `${basePath}/course-page.html?id=${item.id}`;
                     window.location.href = targetUrl;
                 });
                 

@@ -380,13 +380,13 @@ const nextBtn = document.querySelector('.testimonial-next');
 if (testimonialsCarousel && prevBtn && nextBtn) {
     const cards = document.querySelectorAll('.testimonial-card');
     const cardWidth = 390; // 360px + 30px gap
-    
+
     // Clone cards for infinite loop
     cards.forEach(card => {
         const clone = card.cloneNode(true);
         testimonialsCarousel.appendChild(clone);
     });
-    
+
     let currentIndex = 0;
     let isTransitioning = false;
 
@@ -405,7 +405,7 @@ if (testimonialsCarousel && prevBtn && nextBtn) {
         isTransitioning = true;
         currentIndex++;
         updateCarousel();
-        
+
         // Reset to beginning seamlessly when reaching cloned cards
         if (currentIndex >= cards.length) {
             setTimeout(() => {
@@ -427,7 +427,7 @@ if (testimonialsCarousel && prevBtn && nextBtn) {
     function prevSlide() {
         if (isTransitioning) return;
         isTransitioning = true;
-        
+
         if (currentIndex === 0) {
             testimonialsCarousel.style.transition = 'none';
             currentIndex = cards.length;
@@ -507,7 +507,7 @@ if (testimonialsCarousel && prevBtn && nextBtn) {
 if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     document.querySelectorAll('[data-parallax-bg]').forEach((img) => {
         const section = img.closest('section');
-        
+
         if (section) {
             // Move up on scroll
             gsap.fromTo(img,
@@ -529,32 +529,6 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
 }
 
 
-// Course items click handler using event delegation for dynamic content
-document.addEventListener('click', function(e) {
-    // Find if the click was on or within a course-item element
-    const courseItem = e.target.closest('.course-item[data-course-id]');
-    if (courseItem) {
-        const courseId = courseItem.dataset.courseId;
-        if (courseId) {
-            // Determine if it's a course or webinar to build appropriate URL
-            const courseUrl = `course-page.html?id=${courseId}`;
-            window.location.href = courseUrl;
-        }
-    }
-});
-
-// Also update cursor style for all course items using CSS would be better,
-// but if we need to ensure it's applied to dynamically added elements:
-function updateCourseItemCursor() {
-    const courseItems = document.querySelectorAll('.course-item[data-course-id]:not(.cursor-set)');
-    courseItems.forEach(item => {
-        item.style.cursor = 'pointer';
-        item.classList.add('cursor-set'); // Mark as processed
-    });
-}
-
-// Run initially and after courses are loaded
-updateCourseItemCursor();
 
 
 // Contact form submission
@@ -562,14 +536,14 @@ const mainContactForm = document.getElementById('contactForm');
 if (mainContactForm) {
     mainContactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         const submitButton = this.querySelector('.form-submit');
         const originalText = submitButton.innerHTML;
-        
+
         // Disable button and show loading
         submitButton.disabled = true;
         submitButton.innerHTML = '<span>Отправка...</span>';
-        
+
         // Get form data
         const formData = {
             name: document.getElementById('name').value,
@@ -578,12 +552,12 @@ if (mainContactForm) {
             request_type: 'consultation',
             userType: document.querySelector('input[name="userType"]:checked')?.value
         };
-        
+
         // Add userType to message
         if (formData.userType) {
             formData.message = `[${formData.userType === 'client' ? 'Клиент' : 'Психотерапевт'}] ${formData.message}`;
         }
-        
+
         try {
             const response = await fetch('http://localhost:3001/api/requests', {
                 method: 'POST',
@@ -592,20 +566,20 @@ if (mainContactForm) {
                 },
                 body: JSON.stringify(formData)
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 // Show success message
                 submitButton.innerHTML = '<span>✅ Заявка отправлена!</span>';
                 submitButton.style.background = '#28a745';
-                
+
                 // Reset form
                 mainContactForm.reset();
-                
+
                 // Show success notification
                 showNotification('Спасибо! Мы свяжемся с вами в ближайшее время.', 'success');
-                
+
                 // Restore button after 3 seconds
                 setTimeout(() => {
                     submitButton.disabled = false;
@@ -617,13 +591,13 @@ if (mainContactForm) {
             }
         } catch (error) {
             console.error('Error submitting form:', error);
-            
+
             // Show error
             submitButton.innerHTML = '<span>❌ Ошибка отправки</span>';
             submitButton.style.background = '#dc3545';
-            
+
             showNotification('Произошла ошибка. Попробуйте позже или свяжитесь с нами по телефону.', 'error');
-            
+
             // Restore button after 3 seconds
             setTimeout(() => {
                 submitButton.disabled = false;
@@ -644,14 +618,14 @@ function showNotification(message, type = 'success') {
             <p class="notification-message">${message}</p>
         </div>
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     // Show notification
     setTimeout(() => {
         notification.classList.add('show');
     }, 100);
-    
+
     // Hide and remove after 5 seconds
     setTimeout(() => {
         notification.classList.remove('show');

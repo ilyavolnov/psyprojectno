@@ -18,41 +18,49 @@ if ((!courseSlug || courseSlug === 'null' || courseSlug === 'undefined') && !cou
     loadCourse(identifier);
 }
 
+
 // Load course data
 async function loadCourse(identifier) {
     try {
         // Try to load by slug first, then by ID
-        const response = await fetch(`http://localhost:3001/api/courses/slug/${identifier}`);
-        const data = await response.json();
-        
-        // If slug not found, try by ID
-        if (!data.success && identifier && identifier !== 'null' && identifier !== 'undefined') {
-            // Check if identifier is a number to determine if it's an ID
-            const identifierAsNumber = parseInt(identifier, 10);
-            if (!isNaN(identifierAsNumber)) {
-                const idResponse = await fetch(`http://localhost:3001/api/courses/${identifierAsNumber}`);
-                const idData = await idResponse.json();
+        let response;
+        let data;
 
-                if (idData.success && idData.data) {
-                    const course = idData.data;
-                    document.title = `${course.title} - Маргарита Румянцева`;
-                    const blocks = JSON.parse(course.page_blocks || '[]');
-                    renderCourse(course, blocks);
-                    return;
-                }
+        // Try to load by slug first if it exists and is valid
+        if (courseSlug && courseSlug !== 'null' && courseSlug !== 'undefined') {
+            response = await fetch(`${window.getApiBaseUrl ? getApiBaseUrl() : '/api'}/courses/slug/${courseSlug}`);
+            data = await response.json();
+        } else {
+            // Otherwise try to load by ID
+            const numericId = parseInt(courseId, 10);
+            if (!isNaN(numericId)) {
+                response = await fetch(`${window.getApiBaseUrl ? getApiBaseUrl() : '/api'}/courses/${numericId}`);
+                data = await response.json();
+            } else {
+                showError('Неверный идентификатор курса');
+                return;
             }
         }
 
         if (data.success && data.data) {
             const course = data.data;
-            
+
             // Update page title
             document.title = `${course.title} - Маргарита Румянцева`;
-            
+
             // Parse and render blocks
-            const blocks = JSON.parse(course.page_blocks || '[]');
+            let blocks = [];
+            try {
+                blocks = JSON.parse(course.page_blocks || '[]');
+            } catch (parseError) {
+                console.error('Error parsing course blocks:', parseError);
+                // If parsing fails, try to use an empty array
+                blocks = [];
+            }
+
             renderCourse(course, blocks);
         } else {
+            console.warn('Course not found:', data);
             showError('Курс не найден');
         }
     } catch (error) {
@@ -258,12 +266,13 @@ function renderAuthorBlock(data) {
 
 // Show error
 function showError(message) {
+    const basePath = window.getBasePath ? getBasePath() : '.';
     document.getElementById('course-content').innerHTML = `
         <div class="error-state">
             <div class="container">
                 <h2>Ошибка</h2>
                 <p>${message}</p>
-                <a href="index.html#courses" class="cta-button">Вернуться к курсам</a>
+                <a href="${basePath}/index.html#courses" class="cta-button">Вернуться к курсам</a>
             </div>
         </div>
     `;
@@ -378,7 +387,7 @@ window.openCourseOrder = function(course) {
                 <div class="order-agreements">
                     <label class="order-checkbox-label">
                         <input type="checkbox" class="order-checkbox" id="orderPrivacy" required>
-                        <span>Я ознакомлен(а) и согласен(а) с <a href="../privacy-policy.html" target="_blank">Политикой конфиденциальности</a></span>
+                        <span>Я ознакомлен(а) и согласен(а) с <a href="${window.getBasePath ? getBasePath() : '.'}/privacy-policy.html" target="_blank">Политикой конфиденциальности</a></span>
                     </label>
                     <label class="order-checkbox-label">
                         <input type="checkbox" class="order-checkbox" id="orderConsent" required>
@@ -447,9 +456,7 @@ window.submitCourseOrder = async function(course) {
         submitBtn.disabled = true;
 
         // Send to API
-        const API_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:3001/api'
-            : '/api';
+        const API_URL = window.getApiBaseUrl ? getApiBaseUrl() : '/api';
 
         const response = await fetch(`${API_URL}/requests`, {
             method: 'POST',
@@ -522,9 +529,7 @@ window.applyPromo = async function() {
 
     try {
         // Validate promo code via API
-        const API_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:3001/api'
-            : '/api';
+        const API_URL = window.getApiBaseUrl ? getApiBaseUrl() : '/api';
 
         const response = await fetch(`${API_URL}/promo-codes/validate`, {
             method: 'POST',
