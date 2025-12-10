@@ -138,10 +138,8 @@ async function startServer() {
     }
 }
 
-// Start server only if not in Vercel environment
-if (process.env.VERCEL !== '1') {
-    startServer();
-}
+// Start server
+startServer();
 
-// Export app for Vercel
+// Export app
 module.exports = app;
