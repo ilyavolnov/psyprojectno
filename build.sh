@@ -27,6 +27,9 @@ cp -f src/utils/loaders/courses-loader.js pages/courses/ 2>/dev/null || echo "co
 cp -f src/utils/loaders/specialists-loader.js pages/specialists/ 2>/dev/null || echo "specialists-loader.js not found, skipping..."
 cp -f src/utils/loaders/supervisions-loader.js pages/supervisions/ 2>/dev/null || echo "supervisions-loader.js not found, skipping..."
 
+# Copy other components
+cp -f src/components/popups/supervision-popup.js pages/supervisions/ 2>/dev/null || echo "supervision-popup.js not found, skipping..."
+
 # Copy other page files
 cp -f src/pages/specialists/specialists.html pages/specialists/ 2>/dev/null || echo "specialists.html not found, skipping..."
 cp -f src/pages/supervisions/supervision.html pages/supervisions/ 2>/dev/null || echo "supervision.html not found, skipping..."
