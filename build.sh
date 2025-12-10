@@ -17,6 +17,7 @@ cp -f src/components/footer/footer-loader.js . 2>/dev/null || echo "footer-loade
 
 # Copy load-components.js
 cp -f src/utils/loaders/load-components.js includes/ 2>/dev/null || echo "load-components.js not found, skipping..."
+cp -f src/utils/loaders/courses-loader-homepage.js includes/ 2>/dev/null || echo "courses-loader-homepage.js not found, skipping..."
 
 # Copy other components
 cp -f src/components/popups/consultation-popup.js . 2>/dev/null || echo "consultation-popup.js not found, skipping..."
