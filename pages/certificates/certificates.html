@@ -99,7 +99,7 @@
                         <div class="certificate-price">2 500 ₽</div>
                         <div class="certificate-actions">
                             <button class="certificate-btn certificate-btn-details" data-price="2500">Подробнее</button>
-                            <button class="certificate-btn certificate-btn-pay" data-price="2500">Оплатить</button>
+                            <button class="certificate-btn certificate-btn-pay" data-price="2500">Отправить заявку</button>
                         </div>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
                         <div class="certificate-price">5 000 ₽</div>
                         <div class="certificate-actions">
                             <button class="certificate-btn certificate-btn-details" data-price="5000">Подробнее</button>
-                            <button class="certificate-btn certificate-btn-pay" data-price="5000">Оплатить</button>
+                            <button class="certificate-btn certificate-btn-pay" data-price="5000">Отправить заявку</button>
                         </div>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
                         <div class="certificate-price">10 000 ₽</div>
                         <div class="certificate-actions">
                             <button class="certificate-btn certificate-btn-details" data-price="10000">Подробнее</button>
-                            <button class="certificate-btn certificate-btn-pay" data-price="10000">Оплатить</button>
+                            <button class="certificate-btn certificate-btn-pay" data-price="10000">Отправить заявку</button>
                         </div>
                     </div>
                 </div>
@@ -170,8 +170,25 @@
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" required placeholder="example@mail.com">
                 </div>
-                <button type="submit" class="certificate-submit-btn">Перейти к оплате</button>
-                <p class="certificate-privacy">Нажимая кнопку, вы соглашаетесь с <a href="../../privacy-policy.html">политикой конфиденциальности</a></p>
+
+                <!-- Privacy Policy and Personal Data Processing Checkboxes -->
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="privacyPolicy" name="privacyPolicy" required>
+                        <span class="checkmark"></span>
+                        Я соглашаюсь с <a href="../../privacy-policy.html" target="_blank">политикой конфиденциальности</a>
+                    </label>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="personalDataPolicy" name="personalDataPolicy" required>
+                        <span class="checkmark"></span>
+                        Я соглашаюсь с <a href="../../privacy-policy.html" target="_blank">политикой обработки персональных данных</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="certificate-submit-btn">Отправить заявку</button>
             </form>
         </div>
     </div>

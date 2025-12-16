@@ -103,14 +103,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submission
     certificateForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
+        // Check that required checkboxes are checked
+        const privacyPolicyCheckbox = document.getElementById('privacyPolicy');
+        const personalDataPolicyCheckbox = document.getElementById('personalDataPolicy');
+
+        if (!privacyPolicyCheckbox.checked) {
+            alert('Пожалуйста, подтвердите согласие с политикой конфиденциальности');
+            return;
+        }
+
+        if (!personalDataPolicyCheckbox.checked) {
+            alert('Пожалуйста, подтвердите согласие с политикой обработки персональных данных');
+            return;
+        }
+
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        
+
         try {
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span>Обработка...</span>';
-            
+
             const formData = {
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
@@ -119,12 +133,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 certificate_amount: currentPrice,
                 message: `Заказ подарочного сертификата на сумму ${formatPrice(currentPrice)}`
             };
-            
+
             // Save request to database
-            const API_URL = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3001/api' 
+            const API_URL = window.location.hostname === 'localhost'
+                ? 'http://localhost:3001/api'
                 : '/api';
-            
+
             const response = await fetch(`${API_URL}/requests`, {
                 method: 'POST',
                 headers: {
@@ -132,15 +146,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(formData)
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
-                alert(`✅ Заявка создана! Переход к оплате сертификата на сумму ${formatPrice(currentPrice)}`);
-                
-                // In production, redirect to payment:
-                // window.location.href = 'https://your-payment-system.com/pay?amount=' + currentPrice;
-                
+                alert(`✅ Заявка создана! Наш менеджер свяжется с вами для оформления сертификата на сумму ${formatPrice(currentPrice)}`);
+
                 closePopup(paymentPopup);
                 certificateForm.reset();
             } else {

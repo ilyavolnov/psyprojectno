@@ -5660,6 +5660,62 @@ pecialists Page */
     box-shadow: 0 10px 30px rgba(151, 194, 236, 0.3);
 }
 
+/* Certificate Form Checkboxes */
+.checkbox-group {
+    margin: 15px 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.5;
+    cursor: pointer;
+    gap: 10px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-gray);
+    border-radius: 3px;
+    position: relative;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.3s ease;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+    background-color: var(--color-blue);
+    border-color: var(--color-blue);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-label a {
+    color: var(--color-blue);
+    text-decoration: underline;
+}
+
+.checkbox-label a:hover {
+    color: var(--color-black);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .certificates-section {
