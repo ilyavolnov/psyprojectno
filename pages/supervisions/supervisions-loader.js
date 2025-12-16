@@ -9,9 +9,9 @@ async function loadSupervisions() {
     }
     
     try {
-        const response = await fetch('http://localhost:3001/api/supervisions');
+        const response = await fetch(API_CONFIG.getApiUrl('supervisions'));
         const data = await response.json();
-        
+
         if (!data.success) {
             console.error('Failed to load supervisions');
             return;
@@ -51,9 +51,9 @@ async function loadSupervisions() {
 // Open supervision details popup
 window.openSupervisionDetailsPopup = async function(id) {
     try {
-        const response = await fetch(`http://localhost:3001/api/supervisions/${id}`);
+        const response = await fetch(API_CONFIG.getApiUrl(`supervisions/${id}`));
         const data = await response.json();
-        
+
         if (!data.success) {
             console.error('Failed to load supervision');
             return;

@@ -6,9 +6,9 @@ let supervisionsData = {};
 // Fetch supervisions from backend
 async function loadSupervisionsFromAPI() {
     try {
-        const response = await fetch('http://localhost:3001/api/supervisions');
+        const response = await fetch(API_CONFIG.getApiUrl('supervisions'));
         const result = await response.json();
-        
+
         if (result.success && result.data) {
             // Convert array to object with id as key
             result.data.forEach(supervision => {
@@ -228,18 +228,14 @@ function openSupervisionRequestForm(supervision) {
         };
         
         try {
-            const API_URL = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3001/api' 
-                : '/api';
-            
-            const response = await fetch(`${API_URL}/requests`, {
+            const response = await fetch(API_CONFIG.getApiUrl('requests'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
                 closeForm();
                 showSuccessMessage();

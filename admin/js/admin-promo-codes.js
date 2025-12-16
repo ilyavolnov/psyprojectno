@@ -22,7 +22,7 @@ window.loadPromoCodes = async function() {
 
 async function fetchPromoCodes() {
     try {
-        const response = await fetch('http://localhost:3001/api/promo-codes');
+        const response = await fetch(API_CONFIG.getApiUrl('promo-codes'));
         const result = await response.json();
         
         if (result.success) {
@@ -203,8 +203,8 @@ async function savePromoCode(promoId) {
     
     try {
         const url = promoId 
-            ? `http://localhost:3001/api/promo-codes/${promoId}`
-            : 'http://localhost:3001/api/promo-codes';
+            ? API_CONFIG.getApiUrl(`promo-codes/${promoId}`)
+            : API_CONFIG.getApiUrl('promo-codes');
         
         const response = await fetch(url, {
             method: promoId ? 'PUT' : 'POST',
@@ -236,7 +236,7 @@ window.deletePromoCode = async function(promoId, code) {
     if (!confirmed) return;
     
     try {
-        const response = await fetch(`http://localhost:3001/api/promo-codes/${promoId}`, {
+        const response = await fetch(API_CONFIG.getApiUrl(`promo-codes/${promoId}`), {
             method: 'DELETE'
         });
         

@@ -4,7 +4,7 @@ async function loadHomepageCourses() {
         console.log('Loading courses and webinars for homepage from API...');
 
         // Load courses from backend API
-        const response = await fetch('http://localhost:3001/api/courses');
+        const response = await fetch(API_CONFIG.getApiUrl('courses'));
         const data = await response.json();
 
         console.log('Homepage courses and webinars loaded:', data);

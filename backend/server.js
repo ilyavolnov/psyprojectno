@@ -14,7 +14,8 @@ app.use(cors({
         'http://localhost:3000',
         'http://localhost:8000',
         'http://localhost:8080',
-        'https://dr-rumyantceva.ru',
+        'https://new.dr-rumyantceva.ru',
+        'https://www.new.dr-rumyantceva.ru',
         process.env.FRONTEND_URL || ''
     ].filter(Boolean),  // Filter out empty strings
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

@@ -1,19 +1,128 @@
-// Burger menu toggle
-const burgerMenu = document.querySelector('.burger-menu');
-const nav = document.querySelector('.nav');
+console.log('script.js loaded on page:', window.location.pathname);
 
-burgerMenu.addEventListener('click', () => {
-    burgerMenu.classList.toggle('active');
-    nav.classList.toggle('active');
-});
+// Burger menu toggle - centralized function that can be called multiple times safely
+function initBurgerMenuFromScriptJS() {
+    const burgerMenu = document.querySelector('.burger-menu');
+    const nav = document.querySelector('.nav');
 
-// Close menu when clicking on a link
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        burgerMenu.classList.remove('active');
-        nav.classList.remove('active');
+    console.log('initBurgerMenuFromScriptJS called', { burgerMenu, nav, hasElements: !!burgerMenu && !!nav }); // Отладочный вывод
+
+    if (!burgerMenu || !nav) return; // Don't execute if elements don't exist
+
+    // Check if event listeners have already been added to avoid duplicates
+    if (burgerMenu.dataset.burgerInitializedFromScriptJS === 'true') {
+        return;
+    }
+
+    // Additional check: if the burger menu already has the 'active' class functionality working,
+    // it likely means it's already initialized by page-specific code
+    if (burgerMenu.classList.contains('active') || nav.classList.contains('active')) {
+        // If the menu is already active, don't re-initialize
+        if (document.body.style.overflow === 'hidden') {
+            return;
+        }
+    }
+
+    // Mark as initialized
+    burgerMenu.dataset.burgerInitializedFromScriptJS = 'true';
+
+    // Toggle menu
+    burgerMenu.addEventListener('click', () => {
+        burgerMenu.classList.toggle('active');
+        nav.classList.toggle('active');
+        document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
     });
+
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            burgerMenu.classList.remove('active');
+            nav.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!nav.contains(e.target) && !burgerMenu.contains(e.target) && nav.classList.contains('active')) {
+            burgerMenu.classList.remove('active');
+            nav.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+// Try to initialize immediately if elements exist
+initBurgerMenuFromScriptJS();
+
+// Also initialize when DOM content is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(initBurgerMenuFromScriptJS, 100); // Slight delay to ensure elements are rendered
 });
+
+// Set up a periodic check to initialize burger menu if it appears later
+// This is a fallback in case MutationObserver doesn't catch all cases
+const intervalId = setInterval(() => {
+    const burgerMenu = document.querySelector('.burger-menu');
+    const nav = document.querySelector('.nav');
+
+    if (burgerMenu && nav) {
+        console.log('Periodic check found burger menu elements, initializing...');
+        initBurgerMenuFromScriptJS();
+        // Stop the interval once we've found the elements
+        clearInterval(intervalId);
+    }
+}, 300); // Check every 300ms
+
+// Stop the interval after 10 seconds to prevent it from running indefinitely
+setTimeout(() => {
+    clearInterval(intervalId);
+}, 10000);
+
+// Add a global function that can be called by other scripts after dynamic content is loaded
+window.initBurgerMenuFromScriptJS = initBurgerMenuFromScriptJS;
+
+// Set up a mutation observer to handle dynamically added header elements
+if (window.MutationObserver) {
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                // Check if header elements were added specifically to the header placeholder
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1) { // Element node
+                        // Check if this element or its descendants contain the header structure
+                        const hasBurgerMenu = node.classList &&
+                            (node.classList.contains('header') && node.querySelector('.burger-menu'));
+
+                        const hasBurgerMenuDirectly = node.classList && node.classList.contains('burger-menu');
+
+                        if (hasBurgerMenu || hasBurgerMenuDirectly) {
+                            console.log('MutationObserver detected header with burger menu, initializing...');
+                            // Delay to ensure elements are rendered
+                            setTimeout(initBurgerMenuFromScriptJS, 30);
+                        }
+                    }
+                });
+
+                // Also check if the header-placeholder itself was affected
+                if (mutation.target && mutation.target.id === 'header-placeholder') {
+                    const hasBurgerMenu = mutation.target.querySelector &&
+                        mutation.target.querySelector('.burger-menu');
+                    if (hasBurgerMenu) {
+                        console.log('MutationObserver detected header-placeholder now contains burger menu, initializing...');
+                        setTimeout(initBurgerMenuFromScriptJS, 30);
+                    }
+                }
+            }
+        });
+    });
+
+    // Start observing
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}
 
 // CTA buttons handlers
 document.querySelectorAll('.hero-cta-button').forEach(button => {
@@ -559,7 +668,7 @@ if (mainContactForm) {
         }
 
         try {
-            const response = await fetch('http://localhost:3001/api/requests', {
+            const response = await fetch(API_CONFIG.getApiUrl('requests'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

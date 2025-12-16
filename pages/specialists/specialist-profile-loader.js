@@ -24,7 +24,7 @@ class SpecialistProfile {
     async loadSpecialist(id) {
         try {
             // Try loading from API first
-            const response = await fetch(`http://localhost:3001/api/specialists/${id}`);
+            const response = await fetch(API_CONFIG.getApiUrl(`specialists/${id}`));
             const data = await response.json();
             if (data.success) {
                 this.specialist = data.data;

@@ -15,7 +15,7 @@ window.loadWebinars = async function() {
     let webinars = [];
     try {
         console.log('Loading webinars from API...');
-        const response = await fetch('http://localhost:3001/api/courses?type=webinar');
+        const response = await fetch(API_CONFIG.getApiUrl('courses?type=webinar'));
         const data = await response.json();
         console.log('Webinars API response:', data);
         if (data.success) {
@@ -36,11 +36,11 @@ window.loadWebinars = async function() {
 
             <div class="admin-courses-grid">
                 ${webinars.map(webinar => {
-                    const imagePath = webinar.image ? (webinar.image.startsWith('http') ? webinar.image : `../../${webinar.image}`) : '../../images/hero-page.webp';
+                    const imagePath = webinar.image ? (webinar.image.startsWith('http') ? webinar.image : '/' + webinar.image) : '/images/hero-page.webp';
                     return `
                     <div class="admin-course-card">
                         <div class="admin-course-image">
-                            <img src="${imagePath}" alt="${webinar.title}" onerror="this.src='../../images/hero-page.webp'">
+                            <img src="${imagePath}" alt="${webinar.title}" onerror="this.src='/images/hero-page.webp'">
                         </div>
                         <div class="admin-course-info">
                             <h3 class="admin-course-title">${webinar.title}</h3>
@@ -387,7 +387,7 @@ window.editWebinar = async function(id) {
 
     if (!webinar) {
         try {
-            const response = await fetch(`http://localhost:3001/api/courses/${id}`);
+            const response = await fetch(API_CONFIG.getApiUrl(`courses/${id}`));
             const data = await response.json();
             if (data.success) {
                 webinar = data.data;
@@ -408,7 +408,7 @@ window.deleteWebinar = async function(id) {
     if (!confirmed) return;
 
     try {
-        const response = await fetch(`http://localhost:3001/api/courses/${id}`, {
+        const response = await fetch(API_CONFIG.getApiUrl(`courses/${id}`), {
             method: 'DELETE'
         });
 
@@ -434,7 +434,7 @@ function openWebinarPopup(webinar = null) {
 
     title.textContent = webinar ? `Редактировать: ${webinar.title}` : 'Создать новый вебинар';
 
-    const imagePath = webinar?.image ? (webinar.image.startsWith('http') ? webinar.image : `../../${webinar.image}`) : '../../images/hero-page.webp';
+    const imagePath = webinar?.image ? (webinar.image.startsWith('http') ? webinar.image : '/' + webinar.image) : '/images/hero-page.webp';
 
     // Store current webinar for blocks
     window.currentEditingWebinar = webinar;
@@ -478,7 +478,7 @@ function openWebinarPopup(webinar = null) {
             <div class="admin-form-group">
                 <label class="admin-form-label">Изображение</label>
                 <div class="admin-photo-upload">
-                    <img src="${imagePath}" alt="Preview" id="webinarImagePreview" class="admin-photo-preview" onerror="this.src='../../images/hero-page.webp'">
+                    <img src="${imagePath}" alt="Preview" id="webinarImagePreview" class="admin-photo-preview" onerror="this.src='/images/hero-page.webp'">
                     <div class="admin-photo-controls">
                         <input type="file" id="webinarPhotoFile" accept="image/*" style="display: none;" onchange="handleWebinarPhotoUpload(event)">
                         <button type="button" class="admin-btn admin-btn-secondary" onclick="document.getElementById('webinarPhotoFile').click()">
@@ -614,7 +614,7 @@ function openWebinarPopup(webinar = null) {
         const preview = document.getElementById('webinarImagePreview');
         const value = e.target.value;
         if (value) {
-            preview.src = value.startsWith('http') ? value : `../../${value}`;
+            preview.src = value.startsWith('http') ? value : '/' + value;
         }
     });
 }
@@ -669,8 +669,8 @@ window.saveWebinar = async function(webinarId) {
 
     try {
         const url = webinarId ?
-            `http://localhost:3001/api/courses/${webinarId}` :
-            'http://localhost:3001/api/courses';
+            API_CONFIG.getApiUrl(`courses/${webinarId}`) :
+            API_CONFIG.getApiUrl('courses');
 
         const method = webinarId ? 'PUT' : 'POST';
 
@@ -705,7 +705,7 @@ window.saveWebinarBlocks = async function(webinarId) {
     const blocksData = getWebinarBlocksData();
 
     try {
-        const response = await fetch(`http://localhost:3001/api/courses/${webinarId}`, {
+        const response = await fetch(API_CONFIG.getApiUrl(`courses/${webinarId}`), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -758,7 +758,7 @@ window.handleWebinarPhotoUpload = async function (event) {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await fetch('http://localhost:3001/api/upload/image', {
+        const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
             method: 'POST',
             body: formData
         });
@@ -768,7 +768,7 @@ window.handleWebinarPhotoUpload = async function (event) {
         if (result.success) {
             // Update preview and input with uploaded image path
             if (preview) {
-                preview.src = '../../' + result.data.path;
+                preview.src = '/' + result.data.path;
                 preview.style.opacity = '1';
             }
             if (photoInput) {
@@ -903,7 +903,7 @@ function generateWebinarBlockFields(block, index) {
                         </div>
                         <input type="file" id="webinarBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleWebinarBlockImageUpload(event, ${index}, 'image')">
                     </div>
-                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '/' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Название вебинара</label>
@@ -951,7 +951,7 @@ function generateWebinarBlockFields(block, index) {
                         </div>
                         <input type="file" id="webinarBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleWebinarBlockImageUpload(event, ${index}, 'image')">
                     </div>
-                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '/' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Заголовок</label>
@@ -1009,7 +1009,7 @@ function generateWebinarBlockFields(block, index) {
                         </div>
                         <input type="file" id="webinarBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleWebinarBlockImageUpload(event, ${index}, 'image')">
                     </div>
-                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '/' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Позиция изображения</label>
@@ -1052,7 +1052,7 @@ function generateWebinarBlockFields(block, index) {
                         </div>
                         <input type="file" id="webinarBlockImageUpload_${index}_photo" accept="image/*" style="display: none;" onchange="handleWebinarBlockImageUpload(event, ${index}, 'photo')">
                     </div>
-                    ${data.photo ? `<div class="admin-image-preview"><img src="${data.photo.startsWith('http') ? data.photo : '../../' + data.photo}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                    ${data.photo ? `<div class="admin-image-preview"><img src="${data.photo.startsWith('http') ? data.photo : '/' + data.photo}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Имя автора</label>
@@ -1273,7 +1273,7 @@ window.handleWebinarBlockImageUpload = async function(event, blockIndex, fieldNa
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await fetch('http://localhost:3001/api/upload/image', {
+        const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
             method: 'POST',
             body: formData
         });
@@ -1309,7 +1309,7 @@ window.handleWebinarBlockImageUpload = async function(event, blockIndex, fieldNa
                 preview.className = 'admin-image-preview';
                 container.appendChild(preview);
             }
-            const imagePath = data.data.path.startsWith('http') ? data.data.path : '../../' + data.data.path;
+            const imagePath = data.data.path.startsWith('http') ? data.data.path : '/' + data.data.path;
             preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
         }
 
@@ -1337,7 +1337,7 @@ window.pasteWebinarBlockImageFromClipboard = async function(blockIndex, fieldNam
                 const formData = new FormData();
                 formData.append('image', blob, 'clipboard-image.png');
 
-                const response = await fetch('http://localhost:3001/api/upload/image', {
+                const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
                     method: 'POST',
                     body: formData
                 });
@@ -1373,7 +1373,7 @@ window.pasteWebinarBlockImageFromClipboard = async function(blockIndex, fieldNam
                         preview.className = 'admin-image-preview';
                         container.appendChild(preview);
                     }
-                    const imagePath = data.data.path.startsWith('http') ? data.data.path : '../../' + data.data.path;
+                    const imagePath = data.data.path.startsWith('http') ? data.data.path : '/' + data.data.path;
                     preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
                 }
 

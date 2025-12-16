@@ -3559,6 +3559,11 @@ pecialists Page */
         min-height: 500px;
     }
 
+    /* Override for family session banner to allow it to expand based on content */
+    .banner-slide:has(.banner-content.family-session) {
+        min-height: auto;
+    }
+
     .banner-title {
         font-size: 28px;
         margin-bottom: 12px;
@@ -3706,6 +3711,76 @@ pecialists Page */
 
     .therapist-item li {
         font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .banner-content.family-session .therapists-info {
+        grid-template-columns: 1fr; /* Make therapists stack vertically on mobile */
+        gap: 20px;
+    }
+
+    .banner-content.family-session .therapist-item h4 {
+        font-size: 18px;
+    }
+
+    .banner-content.family-session .therapist-item li {
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    /* Additional optimizations for family session banner on mobile */
+    .banner-content.family-session .banner-title {
+        font-size: 22px; /* Even smaller title for mobile */
+        line-height: 1.3;
+        margin-bottom: 8px;
+    }
+
+    .banner-content.family-session .banner-subtitle {
+        font-size: 14px; /* Smaller subtitle for mobile */
+        line-height: 1.3;
+        margin-bottom: 12px;
+    }
+
+    .banner-content.family-session .therapists-info {
+        margin-top: 10px; /* Reduce top margin */
+        gap: 15px; /* Reduce gap between therapist items */
+    }
+
+    .banner-content.family-session .therapist-item {
+        margin-bottom: 10px;
+    }
+
+    .banner-content.family-session .therapist-item h4 {
+        font-size: 16px; /* Smaller therapist names */
+        margin-bottom: 5px;
+    }
+
+    .banner-content.family-session .therapist-item li {
+        font-size: 12px; /* Smaller list item text */
+        margin-bottom: 2px;
+    }
+
+    .banner-content.family-session .banner-price {
+        font-size: 18px; /* Smaller price text */
+        margin-bottom: 5px;
+    }
+
+    .banner-content.family-session .banner-actions {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .banner-content.family-session .banner-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .banner-content.family-session .banner-btn {
+        width: 100%;
+        max-width: 300px;
     }
 }
 

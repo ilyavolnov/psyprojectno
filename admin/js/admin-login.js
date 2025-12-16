@@ -63,12 +63,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // SHA-256 hashing function
     async function hashPassword(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        return hashHex;
+        // Check if crypto.subtle is available (works only on HTTPS or localhost)
+        if (crypto && crypto.subtle) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        } else {
+            // Fallback: send plain text password over HTTPS (the API should handle securely)
+            // In a real application, use a proper crypto library polyfill
+            console.warn('Crypto API not available, sending password as-is (ensure HTTPS is used)');
+            return password;
+        }
     }
 
     // Generate secure random token (like crypto wallet seed)
@@ -81,11 +89,24 @@ document.addEventListener('DOMContentLoaded', function() {
     async function validateCredentials(username, password) {
         // Send plain password to server for authentication
         try {
-            const API_URL = window.location.hostname === 'localhost'
-                ? 'http://localhost:3001/api'
-                : '/api';
+            // Check if API_CONFIG is available
+            if (typeof API_CONFIG === 'undefined' || typeof API_CONFIG.getApiUrl !== 'function') {
+                console.error('API_CONFIG is not properly loaded. Falling back to hardcoded URLs');
+                // Fallback to old method if API_CONFIG is not available
+                const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001/api' : '/api';
+                const response = await fetch(`${API_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
 
-            const response = await fetch(`${API_URL}/admin/login`, {
+                const result = await response.json();
+                return result.success;
+            }
+
+            const response = await fetch(API_CONFIG.getApiUrl('admin/login'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

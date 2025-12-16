@@ -121,13 +121,13 @@ document.addEventListener('DOMContentLoaded', function () {
         let recentRequests = [];
 
         try {
-            const response = await fetch('http://localhost:3001/api/requests/stats/summary');
+            const response = await fetch(API_CONFIG.getApiUrl('requests/stats/summary'));
             const data = await response.json();
             if (data.success) {
                 stats = data.data;
             }
 
-            const reqResponse = await fetch('http://localhost:3001/api/requests?limit=5');
+            const reqResponse = await fetch(API_CONFIG.getApiUrl('requests?limit=5'));
             const reqData = await reqResponse.json();
             if (reqData.success) {
                 // Show only new requests on dashboard
@@ -263,13 +263,13 @@ document.addEventListener('DOMContentLoaded', function () {
         let stats = { total: 0, archived: 0, deleted: 0 };
 
         try {
-            const response = await fetch('http://localhost:3001/api/requests');
+            const response = await fetch(API_CONFIG.getApiUrl('requests'));
             const data = await response.json();
             if (data.success) {
                 requests = data.data;
             }
 
-            const statsResponse = await fetch('http://localhost:3001/api/requests/stats/summary');
+            const statsResponse = await fetch(API_CONFIG.getApiUrl('requests/stats/summary'));
             const statsData = await statsResponse.json();
             if (statsData.success) {
                 stats = statsData.data;
@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let specialists = [];
         try {
             console.log('Loading specialists from API...');
-            const response = await fetch('http://localhost:3001/api/specialists');
+            const response = await fetch(API_CONFIG.getApiUrl('specialists'));
             console.log('Response status:', response.status);
             const data = await response.json();
             console.log('API response:', data);
@@ -521,12 +521,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return specialists.map(spec => {
             // Fix image path for admin panel (add ../../ to go to project root)
-            const imagePath = spec.photo ? (spec.photo.startsWith('http') ? spec.photo : `../../${spec.photo}`) : '../../images/hero-page.webp';
+            const imagePath = spec.photo ? (spec.photo.startsWith('http') ? spec.photo : '/' + spec.photo) : '/images/hero-page.webp';
             
             return `
             <div class="admin-specialist-card" data-specialist-id="${spec.id}" data-status="${spec.status}">
                 <div class="admin-specialist-photo">
-                    <img src="${imagePath}" alt="${spec.name}" onerror="this.src='../../images/hero-page.webp'">
+                    <img src="${imagePath}" alt="${spec.name}" onerror="this.src='/images/hero-page.webp'">
                     <span class="admin-specialist-status admin-specialist-status-${spec.status}">
                         ${getSpecialistStatusText(spec.status)}
                     </span>
@@ -622,8 +622,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             const url = id ? 
-                `http://localhost:3001/api/specialists/${id}` : 
-                'http://localhost:3001/api/specialists';
+                API_CONFIG.getApiUrl(`specialists/${id}`) :
+                API_CONFIG.getApiUrl('specialists');
             
             const method = id ? 'PUT' : 'POST';
             
@@ -657,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('specialistPopupTitle').textContent = specialist ? `Редактировать: ${specialist.name}` : 'Добавить нового специалиста';
 
         const popupBody = document.getElementById('specialistPopupBody');
-        const imagePath = specialist?.photo ? (specialist.photo.startsWith('http') ? specialist.photo : '../../' + specialist.photo) : '../../images/hero-page.webp';
+        const imagePath = specialist?.photo ? (specialist.photo.startsWith('http') ? specialist.photo : '/' + specialist.photo) : '/images/hero-page.webp';
         
         popupBody.innerHTML = `
             <form class="admin-form" id="editSpecialistForm">
@@ -695,7 +695,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="admin-form-group">
                     <label class="admin-form-label">Фото</label>
                     <div class="admin-photo-upload">
-                        <img src="${imagePath}" alt="Preview" id="specPhotoPreview" class="admin-photo-preview" onerror="this.src='../../images/hero-page.webp'">
+                        <img src="${imagePath}" alt="Preview" id="specPhotoPreview" class="admin-photo-preview" onerror="this.src='/images/hero-page.webp'">
                         <div class="admin-photo-controls">
                             <input type="file" id="specPhotoFile" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
                             <button type="button" class="admin-btn admin-btn-secondary" onclick="document.getElementById('specPhotoFile').click()">
@@ -772,7 +772,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const preview = document.getElementById('specPhotoPreview');
             const value = e.target.value;
             if (value) {
-                preview.src = value.startsWith('http') ? value : `../../${value}`;
+                preview.src = value.startsWith('http') ? value : '/' + value;
             }
         });
         
@@ -868,7 +868,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            const response = await fetch(`http://localhost:3001/api/specialists/${id}`, {
+            const response = await fetch(API_CONFIG.getApiUrl(`specialists/${id}`), {
                 method: 'DELETE'
             });
 
@@ -1312,7 +1312,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!confirmed) return;
 
         try {
-            const response = await fetch(`http://localhost:3001/api/requests/${requestId}`, {
+            const response = await fetch(API_CONFIG.getApiUrl(`requests/${requestId}`), {
                 method: 'DELETE'
             });
 
@@ -1342,7 +1342,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         try {
-            const response = await fetch('http://localhost:3001/api/requests', {
+            const response = await fetch(API_CONFIG.getApiUrl('requests'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(testData)
@@ -1438,8 +1438,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const request = window.allRequests?.find(r => r.id === id);
                 const isArchived = request?.archived === 1;
                 const url = isArchived 
-                    ? `http://localhost:3001/api/requests/${id}/archive?remove=true`
-                    : `http://localhost:3001/api/requests/${id}/archive`;
+                    ? API_CONFIG.getApiUrl(`requests/${id}/archive?remove=true`)
+                    : API_CONFIG.getApiUrl(`requests/${id}/archive`);
                     
                 return fetch(url, { method: 'PUT' });
             });
@@ -1480,8 +1480,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const request = window.allRequests?.find(r => r.id === id);
                 const isPermanent = request?.deleted === 1;
                 const url = isPermanent 
-                    ? `http://localhost:3001/api/requests/${id}?permanent=true`
-                    : `http://localhost:3001/api/requests/${id}`;
+                    ? API_CONFIG.getApiUrl(`requests/${id}?permanent=true`)
+                    : API_CONFIG.getApiUrl(`requests/${id}`);
                     
                 return fetch(url, { method: 'DELETE' });
             });
@@ -1533,7 +1533,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             try {
                 await Promise.all(ids.map(id =>
-                    fetch(`http://localhost:3001/api/requests/${id}`, {
+                    fetch(API_CONFIG.getApiUrl(`requests/${id}`), {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ status })
@@ -1581,7 +1581,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData();
             formData.append('image', file);
 
-            const response = await fetch('http://localhost:3001/api/upload/image', {
+            const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
                 method: 'POST',
                 body: formData
             });
@@ -1591,7 +1591,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (result.success) {
                 // Update preview and input with uploaded image path
                 if (preview) {
-                    preview.src = '../../' + result.data.path;
+                    preview.src = '/' + result.data.path;
                     preview.style.opacity = '1';
                 }
                 if (photoInput) {
@@ -1626,7 +1626,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Load requests based on tab
                 try {
-                    const response = await fetch(`http://localhost:3001/api/requests?tab=${tabType}`);
+                    const response = await fetch(API_CONFIG.getApiUrl(`requests?tab=${tabType}`));
                     const data = await response.json();
 
                     if (data.success) {
@@ -1695,7 +1695,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (specialist) params.append('specialistId', specialist);
 
         try {
-            const response = await fetch(`http://localhost:3001/api/requests?${params.toString()}`);
+            const response = await fetch(API_CONFIG.getApiUrl(`requests?${params.toString()}`));
             const data = await response.json();
 
             if (data.success) {
@@ -1757,7 +1757,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function updateRequestsBadge() {
         try {
-            const response = await fetch('http://localhost:3001/api/requests/stats/summary');
+            const response = await fetch(API_CONFIG.getApiUrl('requests/stats/summary'));
             const data = await response.json();
 
             const badge = document.querySelector('[data-page="requests"] .admin-badge');

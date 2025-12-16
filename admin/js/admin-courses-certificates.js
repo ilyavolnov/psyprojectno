@@ -7,7 +7,7 @@ window.loadCourses = async function() {
     const pageTitle = document.getElementById('pageTitle');
     const pageSubtitle = document.getElementById('pageSubtitle');
     const adminContent = document.getElementById('adminContent');
-    
+
     pageTitle.textContent = 'Курсы';
     pageSubtitle.textContent = 'Управление курсами и вебинарами';
 
@@ -15,7 +15,7 @@ window.loadCourses = async function() {
     let courses = [];
     try {
         console.log('Loading courses from API...');
-        const response = await fetch('http://localhost:3001/api/courses?type=course');
+        const response = await fetch(API_CONFIG.getApiUrl('courses?type=course'));
         const data = await response.json();
         console.log('Courses API response:', data);
         if (data.success) {
@@ -36,11 +36,11 @@ window.loadCourses = async function() {
 
             <div class="admin-courses-grid">
                 ${courses.map(course => {
-                    const imagePath = course.image ? (course.image.startsWith('http') ? course.image : `../../${course.image}`) : '../../images/hero-page.webp';
+                    const imagePath = course.image ? (course.image.startsWith('http') ? course.image : '/' + course.image) : '/images/hero-page.webp';
                     return `
                     <div class="admin-course-card">
                         <div class="admin-course-image">
-                            <img src="${imagePath}" alt="${course.title}" onerror="this.src='../../images/hero-page.webp'">
+                            <img src="${imagePath}" alt="${course.title}" onerror="this.src='/images/hero-page.webp'">
                         </div>
                         <div class="admin-course-info">
                             <h3 class="admin-course-title">${course.title}</h3>
@@ -87,7 +87,7 @@ window.loadCertificates = async function() {
     const pageTitle = document.getElementById('pageTitle');
     const pageSubtitle = document.getElementById('pageSubtitle');
     const adminContent = document.getElementById('adminContent');
-    
+
     pageTitle.textContent = 'Сертификаты';
     pageSubtitle.textContent = 'Управление подарочными сертификатами';
 
@@ -149,7 +149,7 @@ window.loadCertificates = async function() {
         <!-- Search and Actions -->
         <div class="admin-filters">
             <input type="text" id="searchCertificate" class="admin-filter-select" placeholder="🔍 Поиск по номеру сертификата...">
-            
+
             <select class="admin-filter-select" id="filterCertStatus">
                 <option value="">Все статусы</option>
                 <option value="active">Активные</option>
@@ -252,7 +252,7 @@ window.loadCertificates = async function() {
     // Initialize search
     document.getElementById('searchCertificate').addEventListener('input', filterCertificates);
     document.getElementById('filterCertStatus').addEventListener('change', filterCertificates);
-    
+
     // Custom amount toggle
     const amountSelect = document.getElementById('certAmount');
     if (amountSelect) {
@@ -287,11 +287,11 @@ function formatDate(dateString) {
 window.createCertificate = function() {
     const popup = document.getElementById('certificatePopup');
     popup.classList.add('active');
-    
+
     // Close handlers
     popup.querySelector('.admin-popup-overlay').addEventListener('click', closeCertificatePopup);
     popup.querySelector('.admin-popup-close').addEventListener('click', closeCertificatePopup);
-    
+
     // Form handler
     document.getElementById('certificateForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -306,10 +306,10 @@ window.closeCertificatePopup = function() {
 
 window.saveCertificate = async function() {
     const amountSelect = document.getElementById('certAmount').value;
-    const amount = amountSelect === 'custom' ? 
-        document.getElementById('certCustomAmount').value : 
+    const amount = amountSelect === 'custom' ?
+        document.getElementById('certCustomAmount').value :
         amountSelect;
-    
+
     const data = {
         amount: parseInt(amount),
         clientName: document.getElementById('certClientName').value,
@@ -320,7 +320,7 @@ window.saveCertificate = async function() {
 
     console.log('Creating certificate:', data);
     await adminSuccess(`Сертификат создан!\nНомер: ${data.number}\nНоминал: ${data.amount.toLocaleString('ru-RU')} ₽`);
-    
+
     closeCertificatePopup();
     loadCertificates();
 };
@@ -328,14 +328,14 @@ window.saveCertificate = async function() {
 window.viewCertificate = async function(number) {
     const cert = window.certificatesData.find(c => c.number === number);
     if (!cert) return;
-    
+
     await adminAlert(`Сертификат ${number}\nНоминал: ${cert.amount.toLocaleString('ru-RU')} ₽\nКлиент: ${cert.clientName}\nСтатус: ${getCertStatusText(cert.status)}`);
 };
 
 window.cancelCertificate = async function(number) {
     const confirmed = await adminConfirm(`Аннулировать сертификат ${number}?`);
     if (!confirmed) return;
-    
+
     console.log('Cancelling certificate:', number);
     await adminSuccess('Сертификат аннулирован!');
     loadCertificates();
@@ -344,17 +344,17 @@ window.cancelCertificate = async function(number) {
 window.filterCertificates = function() {
     const search = document.getElementById('searchCertificate').value.toLowerCase();
     const status = document.getElementById('filterCertStatus').value;
-    
+
     let filtered = window.certificatesData;
-    
+
     if (search) {
         filtered = filtered.filter(c => c.number.toLowerCase().includes(search));
     }
-    
+
     if (status) {
         filtered = filtered.filter(c => c.status === status);
     }
-    
+
     const tbody = document.getElementById('certificatesTableBody');
     tbody.innerHTML = filtered.map(cert => `
         <tr>
@@ -384,10 +384,10 @@ window.addCourse = function() {
 
 window.editCourse = async function(id) {
     let course = window.coursesData.find(c => c.id === id);
-    
+
     if (!course) {
         try {
-            const response = await fetch(`http://localhost:3001/api/courses/${id}`);
+            const response = await fetch(API_CONFIG.getApiUrl(`courses/${id}`));
             const data = await response.json();
             if (data.success) {
                 course = data.data;
@@ -398,7 +398,7 @@ window.editCourse = async function(id) {
             return;
         }
     }
-    
+
     if (!course) return;
     openCoursePopup(course);
 };
@@ -406,14 +406,14 @@ window.editCourse = async function(id) {
 window.deleteCourse = async function(id) {
     const confirmed = await adminConfirm('Удалить этот курс?', 'Подтверждение удаления');
     if (!confirmed) return;
-    
+
     try {
-        const response = await fetch(`http://localhost:3001/api/courses/${id}`, {
+        const response = await fetch(API_CONFIG.getApiUrl(`courses/${id}`), {
             method: 'DELETE'
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             await adminSuccess('Курс удален!');
             loadCourses();
@@ -431,21 +431,21 @@ function openCoursePopup(course = null) {
     const popup = document.getElementById('coursePopup');
     const title = document.getElementById('coursePopupTitle');
     const body = document.getElementById('coursePopupBody');
-    
+
     title.textContent = course ? `Редактировать: ${course.title}` : 'Создать новый курс';
-    
-    const imagePath = course?.image ? (course.image.startsWith('http') ? course.image : `../../${course.image}`) : '../../images/hero-page.webp';
-    
+
+    const imagePath = course?.image ? (course.image.startsWith('http') ? course.image : '/' + course.image) : '/images/hero-page.webp';
+
     // Store current course for blocks
     window.currentEditingCourse = course;
-    
+
     body.innerHTML = `
         <!-- Tabs -->
         <div class="admin-tabs" style="margin-bottom: 20px;">
             <button class="admin-tab active" data-tab="main" onclick="switchCourseTab('main')">Основное</button>
             <button class="admin-tab" data-tab="blocks" onclick="switchCourseTab('blocks')">Блоки страницы</button>
         </div>
-        
+
         <!-- Main Tab -->
         <div id="courseTabMain" class="admin-tab-content active">
         <form class="admin-form" id="courseForm">
@@ -459,7 +459,7 @@ function openCoursePopup(course = null) {
                     <input type="text" class="admin-form-input" id="courseSubtitle" value="${course?.subtitle || ''}">
                 </div>
             </div>
-            
+
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label class="admin-form-label">Цена (₽) *</label>
@@ -474,11 +474,11 @@ function openCoursePopup(course = null) {
                     </select>
                 </div>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Изображение</label>
                 <div class="admin-photo-upload">
-                    <img src="${imagePath}" alt="Preview" id="courseImagePreview" class="admin-photo-preview" onerror="this.src='../../images/hero-page.webp'">
+                    <img src="${imagePath}" alt="Preview" id="courseImagePreview" class="admin-photo-preview" onerror="this.src='/images/hero-page.webp'">
                     <div class="admin-photo-controls">
                         <input type="file" id="coursePhotoFile" accept="image/*" style="display: none;" onchange="handleCoursePhotoUpload(event)">
                         <button type="button" class="admin-btn admin-btn-secondary" onclick="document.getElementById('coursePhotoFile').click()">
@@ -488,7 +488,7 @@ function openCoursePopup(course = null) {
                     </div>
                 </div>
             </div>
-            
+
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label class="admin-form-label">Дата старта (для отображения)</label>
@@ -501,7 +501,7 @@ function openCoursePopup(course = null) {
                     <small style="color: #999; font-size: 12px;">Точная дата и время для обратного отсчета</small>
                 </div>
             </div>
-            
+
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label class="admin-form-label">WhatsApp номер</label>
@@ -511,19 +511,19 @@ function openCoursePopup(course = null) {
                     <!-- Empty for layout -->
                 </div>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Описание курса</label>
                 <textarea class="admin-form-input" id="courseDescription" rows="4">${course?.description || ''}</textarea>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Темы курса (по одной на строку)</label>
                 <textarea class="admin-form-input" id="courseTopics" rows="8" placeholder="Почему мы переедаем?
 Прокрастинация через еду
 Переедание выходного дня">${course?.topics ? (Array.isArray(course.topics) ? course.topics.join('\n') : course.topics) : ''}</textarea>
             </div>
-            
+
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label class="admin-form-label">Длительность доступа</label>
@@ -534,7 +534,7 @@ function openCoursePopup(course = null) {
                     <input type="text" class="admin-form-input" id="courseFeedbackDuration" value="${course?.feedback_duration || ''}" placeholder="Индивидуальное сопровождение">
                 </div>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-toggle-label">
                     <input type="checkbox" id="courseHasCertificate" class="admin-toggle-input" ${course?.has_certificate ? 'checked' : ''}>
@@ -542,24 +542,24 @@ function openCoursePopup(course = null) {
                     <span class="admin-toggle-text">Выдается сертификат</span>
                 </label>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Автор курса</label>
                 <input type="text" class="admin-form-input" id="courseAuthorName" value="${course?.author_name || 'Маргарита Румянцева'}">
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Описание автора</label>
                 <textarea class="admin-form-input" id="courseAuthorDescription" rows="6">${course?.author_description || 'Врач-психиатр, психотерапевт, сексолог (стаж с 2009 г.)'}</textarea>
             </div>
-            
+
             <div class="admin-form-actions">
                 <button type="button" class="admin-btn admin-btn-secondary" onclick="closeCoursePopup()">Отмена</button>
                 <button type="submit" class="admin-btn admin-btn-primary">💾 ${course ? 'Сохранить' : 'Создать'}</button>
             </div>
         </form>
         </div>
-        
+
         <!-- Blocks Tab -->
         <div id="courseTabBlocks" class="admin-tab-content" style="display: none;">
             <div class="admin-blocks-header">
@@ -592,29 +592,29 @@ function openCoursePopup(course = null) {
             </div>
         </div>
     `;
-    
+
     popup.classList.add('active');
-    
+
     // Initialize course blocks
     const existingBlocks = course?.page_blocks ? JSON.parse(course.page_blocks) : [];
     initCourseBlocks(existingBlocks);
-    
+
     // Close handlers
     popup.querySelector('.admin-popup-overlay').addEventListener('click', closeCoursePopup);
     popup.querySelector('.admin-popup-close').addEventListener('click', closeCoursePopup);
-    
+
     // Form handler
     document.getElementById('courseForm').addEventListener('submit', function(e) {
         e.preventDefault();
         saveCourse(course?.id);
     });
-    
+
     // Image preview update
     document.getElementById('courseImage').addEventListener('input', function(e) {
         const preview = document.getElementById('courseImagePreview');
         const value = e.target.value;
         if (value) {
-            preview.src = value.startsWith('http') ? value : `../../${value}`;
+            preview.src = value.startsWith('http') ? value : '/' + value;
         }
     });
 }
@@ -626,12 +626,12 @@ window.switchCourseTab = function(tabName) {
         tab.classList.remove('active');
     });
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-    
+
     // Update tab content
     document.querySelectorAll('.admin-tab-content').forEach(content => {
         content.style.display = 'none';
     });
-    
+
     if (tabName === 'main') {
         document.getElementById('courseTabMain').style.display = 'block';
     } else if (tabName === 'blocks') {
@@ -646,7 +646,7 @@ window.closeCoursePopup = function() {
 window.saveCourse = async function(courseId) {
     const topicsText = document.getElementById('courseTopics').value;
     const topics = topicsText.split('\n').filter(t => t.trim()).map(t => t.trim());
-    
+
     const data = {
         title: document.getElementById('courseTitle').value,
         subtitle: document.getElementById('courseSubtitle').value,
@@ -668,22 +668,22 @@ window.saveCourse = async function(courseId) {
         page_blocks: JSON.stringify(getCourseBlocksData()),
         type: 'course'
     };
-    
+
     try {
-        const url = courseId ? 
-            `http://localhost:3001/api/courses/${courseId}` : 
-            'http://localhost:3001/api/courses';
-        
+        const url = courseId ?
+            API_CONFIG.getApiUrl(`courses/${courseId}`) :
+            API_CONFIG.getApiUrl('courses');
+
         const method = courseId ? 'PUT' : 'POST';
-        
+
         const response = await fetch(url, {
             method: method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             await adminSuccess(`Курс ${courseId ? 'обновлен' : 'создан'} успешно!`);
             closeCoursePopup();
@@ -703,20 +703,20 @@ window.saveCourseBlocks = async function(courseId) {
         await adminError('Сначала сохраните основную информацию о курсе');
         return;
     }
-    
+
     const blocksData = getCourseBlocksData();
-    
+
     try {
-        const response = await fetch(`http://localhost:3001/api/courses/${courseId}`, {
+        const response = await fetch(API_CONFIG.getApiUrl(`courses/${courseId}`), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 page_blocks: JSON.stringify(blocksData)
             })
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             await adminSuccess('Блоки страницы сохранены успешно!');
         } else {
@@ -750,7 +750,7 @@ window.handleCoursePhotoUpload = async function (event) {
     const preview = document.getElementById('courseImagePreview');
     const photoInput = document.getElementById('courseImage');
     const originalSrc = preview?.src;
-    
+
     if (preview) {
         preview.style.opacity = '0.5';
     }
@@ -760,7 +760,7 @@ window.handleCoursePhotoUpload = async function (event) {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await fetch('http://localhost:3001/api/upload/image', {
+        const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
             method: 'POST',
             body: formData
         });
@@ -770,13 +770,13 @@ window.handleCoursePhotoUpload = async function (event) {
         if (result.success) {
             // Update preview and input with uploaded image path
             if (preview) {
-                preview.src = '../../' + result.data.path;
+                preview.src = '/' + result.data.path;  // Use absolute path from site root
                 preview.style.opacity = '1';
             }
             if (photoInput) {
                 photoInput.value = result.data.path;
             }
-            
+
             await adminSuccess('Фото загружено успешно!');
         } else {
             throw new Error(result.error || 'Upload failed');
@@ -784,7 +784,7 @@ window.handleCoursePhotoUpload = async function (event) {
     } catch (error) {
         console.error('Upload error:', error);
         await adminError('Ошибка загрузки: ' + error.message);
-        
+
         // Restore original preview
         if (preview && originalSrc) {
             preview.src = originalSrc;

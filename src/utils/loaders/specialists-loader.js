@@ -20,7 +20,7 @@ class SpecialistsManager {
         try {
             // Try loading from API first (always fresh data)
             try {
-                const apiResponse = await fetch('http://localhost:3001/api/specialists');
+                const apiResponse = await fetch(API_CONFIG.getApiUrl('specialists'));
                 const apiData = await apiResponse.json();
 
                 if (apiData.success && apiData.data) {

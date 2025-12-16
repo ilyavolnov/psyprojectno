@@ -5,7 +5,7 @@ window.openRequestPopup = async function(requestId) {
     
     if (!request) {
         try {
-            const response = await fetch(`http://localhost:3001/api/requests/${requestId}`);
+            const response = await fetch(API_CONFIG.getApiUrl(`requests/${requestId}`));
             const data = await response.json();
             if (data.success) {
                 request = data.data;
@@ -22,7 +22,7 @@ window.openRequestPopup = async function(requestId) {
     // Auto-mark as viewed if status is "new"
     if (request.status === 'new') {
         try {
-            const response = await fetch(`http://localhost:3001/api/requests/${requestId}`, {
+            const response = await fetch(API_CONFIG.getApiUrl(`requests/${requestId}`), {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: 'viewed' })
@@ -50,7 +50,7 @@ window.openRequestPopup = async function(requestId) {
     // Load specialists for dropdown
     let specialists = [];
     try {
-        const response = await fetch('http://localhost:3001/api/specialists');
+        const response = await fetch(API_CONFIG.getApiUrl('specialists'));
         const data = await response.json();
         if (data.success) {
             specialists = data.data;
@@ -230,8 +230,8 @@ window.archiveRequest = async function(requestId) {
     try {
         // Add remove=true query param if already archived
         const url = isArchived 
-            ? `http://localhost:3001/api/requests/${requestId}/archive?remove=true`
-            : `http://localhost:3001/api/requests/${requestId}/archive`;
+            ? API_CONFIG.getApiUrl(`requests/${requestId}/archive?remove=true`)
+            : API_CONFIG.getApiUrl(`requests/${requestId}/archive`);
             
         const response = await fetch(url, {
             method: 'PUT'
@@ -349,7 +349,7 @@ window.saveRequestChanges = async function(requestId) {
     const specialistId = document.getElementById('requestSpecialistId').value;
 
     try {
-        const response = await fetch(`http://localhost:3001/api/requests/${requestId}`, {
+        const response = await fetch(API_CONFIG.getApiUrl(`requests/${requestId}`), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -379,7 +379,7 @@ window.restoreRequest = async function(requestId) {
     if (!confirmed) return;
 
     try {
-        const response = await fetch(`http://localhost:3001/api/requests/${requestId}/restore`, {
+        const response = await fetch(API_CONFIG.getApiUrl(`requests/${requestId}/restore`), {
             method: 'PUT'
         });
 
@@ -413,8 +413,8 @@ window.deleteRequest = async function(requestId) {
     try {
         // Add permanent=true query param if already deleted
         const url = isPermanent 
-            ? `http://localhost:3001/api/requests/${requestId}?permanent=true`
-            : `http://localhost:3001/api/requests/${requestId}`;
+            ? API_CONFIG.getApiUrl(`requests/${requestId}?permanent=true`)
+            : API_CONFIG.getApiUrl(`requests/${requestId}`);
             
         const response = await fetch(url, {
             method: 'DELETE'

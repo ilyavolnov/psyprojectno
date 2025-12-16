@@ -3,18 +3,18 @@ async function loadCourses() {
     try {
         console.log('Loading courses from API...');
         // Load both courses and webinars
-        const response = await fetch('http://localhost:3001/api/courses');
+        const response = await fetch(API_CONFIG.getApiUrl('courses'));
         const data = await response.json();
         console.log('Courses and webinars loaded:', data);
-        
+
         if (data.success && data.data) {
             const coursesList = document.getElementById('courses-list');
             coursesList.innerHTML = '';
-            
+
             // Разделяем на курсы и вебинары
             const courses = data.data.filter(item => item.type === 'course' || !item.type);
             const webinars = data.data.filter(item => item.type === 'webinar');
-            
+
             // Функция для создания элемента
             const createItem = (item, index, type) => {
                 console.log(`${type} ${index + 1}:`, item.title, 'slug:', item.slug);
@@ -23,12 +23,14 @@ async function loadCourses() {
                 itemElement.dataset.image = item.image || '';
                 itemElement.dataset.description = item.description || '';
                 itemElement.dataset.courseId = item.id;
-                
-                const statusClass = item.status === 'available' ? 'status-available' : 
-                                   item.status === 'preorder' ? 'status-preorder' : 'status-completed';
-                const statusText = item.status === 'available' ? 'В доступе' : 
-                                  item.status === 'preorder' ? 'Предзапись' : 'Завершен';
-                
+
+                const statusClass = item.status === 'available' ? 'status-available' :
+                                   item.status === 'preorder' ? 'status-preorder' :
+                                   item.status === 'coming_soon' ? 'status-preorder' : 'status-completed';
+                const statusText = item.status === 'available' ? 'В доступе' :
+                                  item.status === 'preorder' ? 'Предзапись' :
+                                  item.status === 'coming_soon' ? 'Скоро' : 'Завершен';
+
                 itemElement.innerHTML = `
                     <div class="course-item-content">
                         <span class="course-number">${String(index + 1).padStart(2, '0')}</span>
@@ -37,7 +39,7 @@ async function loadCourses() {
                         <span class="course-price">${item.price} ₽</span>
                     </div>
                 `;
-                
+
                 itemElement.style.cursor = 'pointer';
                 itemElement.addEventListener('click', () => {
                     // Determine the correct path based on current location (relative to root)
@@ -47,34 +49,34 @@ async function loadCourses() {
                         : `${basePath}/course-page.html?id=${item.id}`;
                     window.location.href = targetUrl;
                 });
-                
+
                 return itemElement;
             };
-            
+
             // Добавляем заголовок и курсы
             if (courses.length > 0) {
                 const coursesHeader = document.createElement('div');
                 coursesHeader.className = 'courses-section-header';
                 coursesHeader.innerHTML = '<h2 class="section-title">Курсы</h2>';
                 coursesList.appendChild(coursesHeader);
-                
+
                 courses.forEach((course, index) => {
                     coursesList.appendChild(createItem(course, index, 'Course'));
                 });
             }
-            
+
             // Добавляем заголовок и вебинары
             if (webinars.length > 0) {
                 const webinarsHeader = document.createElement('div');
                 webinarsHeader.className = 'courses-section-header';
                 webinarsHeader.innerHTML = '<h2 class="section-title">Вебинары</h2>';
                 coursesList.appendChild(webinarsHeader);
-                
+
                 webinars.forEach((webinar, index) => {
                     coursesList.appendChild(createItem(webinar, index, 'Webinar'));
                 });
             }
-            
+
             console.log(`✅ Loaded ${courses.length} courses and ${webinars.length} webinars from API`);
         }
     } catch (error) {

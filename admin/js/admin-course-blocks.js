@@ -86,7 +86,7 @@ function generateCourseBlockFields(block, index) {
                         </div>
                         <input type="file" id="courseBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleCourseBlockImageUpload(event, ${index}, 'image')">
                     </div>
-                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '/' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Название курса</label>
@@ -134,7 +134,7 @@ function generateCourseBlockFields(block, index) {
                         </div>
                         <input type="file" id="courseBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleCourseBlockImageUpload(event, ${index}, 'image')">
                     </div>
-                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '/' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Заголовок</label>
@@ -192,7 +192,7 @@ function generateCourseBlockFields(block, index) {
                         </div>
                         <input type="file" id="courseBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleCourseBlockImageUpload(event, ${index}, 'image')">
                     </div>
-                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '/' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Позиция изображения</label>
@@ -235,7 +235,7 @@ function generateCourseBlockFields(block, index) {
                         </div>
                         <input type="file" id="courseBlockImageUpload_${index}_photo" accept="image/*" style="display: none;" onchange="handleCourseBlockImageUpload(event, ${index}, 'photo')">
                     </div>
-                    ${data.photo ? `<div class="admin-image-preview"><img src="${data.photo.startsWith('http') ? data.photo : '../../' + data.photo}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                    ${data.photo ? `<div class="admin-image-preview"><img src="${data.photo.startsWith('http') ? data.photo : '/' + data.photo}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Имя автора</label>
@@ -286,15 +286,15 @@ function attachCourseBlockFieldListeners() {
             const blockIndex = parseInt(this.dataset.blockIndex);
             const fieldName = this.dataset.field;
             const blocks = window.currentCourseBlocks || [];
-            
+
             if (!blocks[blockIndex].data) {
                 blocks[blockIndex].data = {};
             }
-            
+
             // Handle array fields (items, credentials)
             if (fieldName === 'items' || fieldName === 'credentials') {
                 blocks[blockIndex].data[fieldName] = this.value.split('\n').filter(item => item.trim());
-            } 
+            }
             // Handle number fields
             else if (fieldName === 'price') {
                 blocks[blockIndex].data[fieldName] = parseInt(this.value) || 0;
@@ -303,11 +303,28 @@ function attachCourseBlockFieldListeners() {
             else {
                 blocks[blockIndex].data[fieldName] = this.value;
             }
-            
+
+            // Update image preview if this is an image field
+            if (fieldName === 'image' || fieldName === 'photo') {
+                const container = this.closest('.admin-form-group');
+                let preview = container.querySelector('.admin-image-preview');
+                if (this.value) {
+                    if (!preview) {
+                        preview = document.createElement('div');
+                        preview.className = 'admin-image-preview';
+                        container.appendChild(preview);
+                    }
+                    const imagePath = this.value.startsWith('http') ? this.value : '/' + this.value;
+                    preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
+                } else if (preview) {
+                    preview.remove();
+                }
+            }
+
             window.currentCourseBlocks = blocks;
         });
     });
-    
+
     // Drag and drop functionality
     attachCourseBlockDragAndDrop();
 }
@@ -480,7 +497,7 @@ window.handleCourseBlockImageUpload = async function(event, blockIndex, fieldNam
         const formData = new FormData();
         formData.append('image', file);
         
-        const response = await fetch('http://localhost:3001/api/upload/image', {
+        const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
             method: 'POST',
             body: formData
         });
@@ -516,7 +533,7 @@ window.handleCourseBlockImageUpload = async function(event, blockIndex, fieldNam
                 preview.className = 'admin-image-preview';
                 container.appendChild(preview);
             }
-            const imagePath = data.data.path.startsWith('http') ? data.data.path : '../../' + data.data.path;
+            const imagePath = data.data.path.startsWith('http') ? data.data.path : '/' + data.data.path;
             preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
         }
         
@@ -544,7 +561,7 @@ window.pasteCourseBlockImageFromClipboard = async function(blockIndex, fieldName
                 const formData = new FormData();
                 formData.append('image', blob, 'clipboard-image.png');
                 
-                const response = await fetch('http://localhost:3001/api/upload/image', {
+                const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
                     method: 'POST',
                     body: formData
                 });
@@ -580,7 +597,7 @@ window.pasteCourseBlockImageFromClipboard = async function(blockIndex, fieldName
                         preview.className = 'admin-image-preview';
                         container.appendChild(preview);
                     }
-                    const imagePath = data.data.path.startsWith('http') ? data.data.path : '../../' + data.data.path;
+                    const imagePath = data.data.path.startsWith('http') ? data.data.path : '/' + data.data.path;
                     preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
                 }
                 

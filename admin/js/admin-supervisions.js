@@ -2,7 +2,7 @@
 
 window.loadSupervisions = async function() {
     try {
-        const response = await fetch('http://localhost:3001/api/supervisions');
+        const response = await fetch(API_CONFIG.getApiUrl('supervisions'));
         const data = await response.json();
         
         if (!data.success) {
@@ -73,7 +73,7 @@ window.openSupervisionPopup = async function(id = null) {
     
     if (id) {
         try {
-            const response = await fetch(`http://localhost:3001/api/supervisions/${id}`);
+            const response = await fetch(API_CONFIG.getApiUrl(`supervisions/${id}`));
             const data = await response.json();
             if (data.success) {
                 supervision = data.data;
@@ -191,8 +191,8 @@ window.saveSupervision = async function(id) {
         };
         
         const url = id 
-            ? `http://localhost:3001/api/supervisions/${id}`
-            : 'http://localhost:3001/api/supervisions';
+            ? API_CONFIG.getApiUrl(`supervisions/${id}`)
+            : API_CONFIG.getApiUrl('supervisions');
         
         const response = await fetch(url, {
             method: id ? 'PUT' : 'POST',
@@ -220,7 +220,7 @@ window.deleteSupervision = async function(id) {
     if (!confirmed) return;
     
     try {
-        const response = await fetch(`http://localhost:3001/api/supervisions/${id}`, {
+        const response = await fetch(API_CONFIG.getApiUrl(`supervisions/${id}`), {
             method: 'DELETE'
         });
         

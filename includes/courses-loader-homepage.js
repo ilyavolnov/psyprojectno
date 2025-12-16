@@ -4,12 +4,24 @@ async function loadHomepageCourses() {
         console.log('Loading courses and webinars for homepage from API...');
 
         // Load courses from backend API
-        const response = await fetch('http://localhost:3001/api/courses');
+        const response = await fetch(API_CONFIG.getApiUrl('courses'));
         const data = await response.json();
 
         console.log('Homepage courses and webinars loaded:', data);
 
         if (data.success && data.data) {
+            // Log specific courses for debugging
+            const tsunamiCourse = data.data.find(item => item.title && item.title.includes('Цунами'));
+            const lavaCourse = data.data.find(item => item.title && item.title.includes('Лавина'));
+
+            if (tsunamiCourse) {
+                console.log('Tsunami course found:', tsunamiCourse.title, 'status:', tsunamiCourse.status);
+            }
+
+            if (lavaCourse) {
+                console.log('Lava course found:', lavaCourse.title, 'status:', lavaCourse.status);
+            }
+
             // Filter courses (not webinars) and webinars separately
             const allCourses = data.data.filter(item =>
                 item.type !== 'webinar' &&  // Exclude webinars from main courses list
@@ -182,6 +194,10 @@ function createCourseElement(course, number) {
         case 'completed':
             statusClass = 'status-completed';
             statusText = 'Завершен';
+            break;
+        case 'coming_soon':
+            statusClass = 'status-preorder';
+            statusText = 'Скоро';
             break;
         default:
             statusClass = 'status-available';

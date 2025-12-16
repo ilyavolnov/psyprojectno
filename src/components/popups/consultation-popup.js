@@ -112,12 +112,7 @@ class ConsultationPopup {
                 message: formData.get('message')
             };
 
-            // Send to backend
-            const API_URL = window.location.hostname === 'localhost'
-                ? 'http://localhost:3001/api'
-                : '/api';
-
-            const response = await fetch(`${API_URL}/requests`, {
+            const response = await fetch(API_CONFIG.getApiUrl('requests'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

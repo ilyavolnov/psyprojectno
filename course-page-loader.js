@@ -28,13 +28,13 @@ async function loadCourse(identifier) {
 
         // Try to load by slug first if it exists and is valid
         if (courseSlug && courseSlug !== 'null' && courseSlug !== 'undefined') {
-            response = await fetch(`${window.getApiBaseUrl ? getApiBaseUrl() : '/api'}/courses/slug/${courseSlug}`);
+            response = await fetch(API_CONFIG.getApiUrl('courses/slug/' + courseSlug));
             data = await response.json();
         } else {
             // Otherwise try to load by ID
             const numericId = parseInt(courseId, 10);
             if (!isNaN(numericId)) {
-                response = await fetch(`${window.getApiBaseUrl ? getApiBaseUrl() : '/api'}/courses/${numericId}`);
+                response = await fetch(API_CONFIG.getApiUrl('courses/' + numericId));
                 data = await response.json();
             } else {
                 showError('Неверный идентификатор курса');
@@ -455,10 +455,7 @@ window.submitCourseOrder = async function(course) {
         submitBtn.textContent = 'Отправка...';
         submitBtn.disabled = true;
 
-        // Send to API
-        const API_URL = window.getApiBaseUrl ? getApiBaseUrl() : '/api';
-
-        const response = await fetch(`${API_URL}/requests`, {
+        const response = await fetch(API_CONFIG.getApiUrl('requests'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -528,10 +525,7 @@ window.applyPromo = async function() {
     }
 
     try {
-        // Validate promo code via API
-        const API_URL = window.getApiBaseUrl ? getApiBaseUrl() : '/api';
-
-        const response = await fetch(`${API_URL}/promo-codes/validate`, {
+        const response = await fetch(API_CONFIG.getApiUrl('promo-codes/validate'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code: promoCode })

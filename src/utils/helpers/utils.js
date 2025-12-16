@@ -7,22 +7,19 @@ function getBasePath() {
 
 // Helper function to get API base URL
 function getApiBaseUrl() {
-    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3001/api'
-        : '/api';
+    return API_CONFIG.getApiUrl('');
 }
 
 // Универсальная функция для получения данных о курсе
 async function getCourse(identifier, isSlug = true) {
     try {
-        const apiPath = getApiBaseUrl();
-        const endpoint = isSlug 
-            ? `${apiPath}/courses/slug/${identifier}` 
-            : `${apiPath}/courses/${identifier}`;
-            
+        const endpoint = isSlug
+            ? API_CONFIG.getApiUrl('courses/slug/' + identifier)
+            : API_CONFIG.getApiUrl('courses/' + identifier);
+
         const response = await fetch(endpoint);
         const data = await response.json();
-        
+
         return data;
     } catch (error) {
         console.error('Error fetching course:', error);
@@ -33,15 +30,14 @@ async function getCourse(identifier, isSlug = true) {
 // Универсальная функция для отправки запросов
 async function sendRequest(data) {
     try {
-        const apiPath = getApiBaseUrl();
-        const response = await fetch(`${apiPath}/requests`, {
+        const response = await fetch(API_CONFIG.getApiUrl('requests'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
         });
-        
+
         return await response.json();
     } catch (error) {
         console.error('Error sending request:', error);
@@ -52,8 +48,7 @@ async function sendRequest(data) {
 // Универсальная функция для валидации промокода
 async function validatePromoCode(code) {
     try {
-        const apiPath = getApiBaseUrl();
-        const response = await fetch(`${apiPath}/promo-codes/validate`, {
+        const response = await fetch(API_CONFIG.getApiUrl('promo-codes/validate'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code: code })

@@ -1,12 +1,12 @@
 // Admin API Client
 class AdminAPI {
-    constructor(baseURL = 'http://localhost:3001/api') {
-        this.baseURL = baseURL;
+    constructor() {
+        // Use the API_CONFIG to get the base URL
     }
 
     async request(endpoint, options = {}) {
-        const url = `${this.baseURL}${endpoint}`;
-        
+        const url = API_CONFIG.getApiUrl(endpoint);
+
         const defaultOptions = {
             headers: {
                 'Content-Type': 'application/json',
