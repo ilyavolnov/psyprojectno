@@ -46,7 +46,10 @@ window.loadCourses = async function() {
                             <h3 class="admin-course-title">${course.title}</h3>
                             <p class="admin-course-description">${course.subtitle || course.description || ''}</p>
                             <div class="admin-course-meta">
-                                <span>💰 ${course.price ? course.price.toLocaleString('ru-RU') + ' ₽' : 'Бесплатно'}</span>
+                                <span>💰 ${course.old_price ?
+                                    `<span style="text-decoration: line-through; opacity: 0.7;">${course.old_price.toLocaleString('ru-RU')} ₽</span> ` +
+                                    `<span style="background-color: #e74c3c; color: white; padding: 2px 8px; border-radius: 4px;">${course.price.toLocaleString('ru-RU')} ₽</span>` :
+                                    (course.price ? course.price.toLocaleString('ru-RU') + ' ₽' : 'Бесплатно')}</span>
                                 <span>📅 ${course.release_date || 'Не указано'}</span>
                             </div>
                         </div>
@@ -466,6 +469,12 @@ function openCoursePopup(course = null) {
                     <input type="number" class="admin-form-input" id="coursePrice" value="${course?.price || ''}" required>
                 </div>
                 <div class="admin-form-group">
+                    <label class="admin-form-label">Зачеркнутая цена (₽)</label>
+                    <input type="number" class="admin-form-input" id="courseOldPrice" value="${course?.old_price || ''}" placeholder="Старая цена">
+                </div>
+            </div>
+            <div class="admin-form-row">
+                <div class="admin-form-group">
                     <label class="admin-form-label">Статус</label>
                     <select class="admin-form-input" id="courseStatus">
                         <option value="available" ${course?.status === 'available' ? 'selected' : ''}>Доступен</option>
@@ -535,13 +544,6 @@ function openCoursePopup(course = null) {
                 </div>
             </div>
 
-            <div class="admin-form-group">
-                <label class="admin-toggle-label">
-                    <input type="checkbox" id="courseHasCertificate" class="admin-toggle-input" ${course?.has_certificate ? 'checked' : ''}>
-                    <span class="admin-toggle-slider"></span>
-                    <span class="admin-toggle-text">Выдается сертификат</span>
-                </label>
-            </div>
 
             <div class="admin-form-group">
                 <label class="admin-form-label">Автор курса</label>
@@ -652,13 +654,13 @@ window.saveCourse = async function(courseId) {
         subtitle: document.getElementById('courseSubtitle').value,
         description: document.getElementById('courseDescription').value,
         price: parseInt(document.getElementById('coursePrice').value),
+        old_price: document.getElementById('courseOldPrice').value ? parseInt(document.getElementById('courseOldPrice').value) : null,
         status: document.getElementById('courseStatus').value,
         image: document.getElementById('courseImage').value,
         release_date: document.getElementById('courseReleaseDate').value,
         start_date: document.getElementById('courseStartDate').value,
         access_duration: document.getElementById('courseAccessDuration').value,
         feedback_duration: document.getElementById('courseFeedbackDuration').value,
-        has_certificate: document.getElementById('courseHasCertificate').checked,
         whatsapp_number: document.getElementById('courseWhatsapp').value,
         bonuses: null, // Поле может быть добавлено позже если понадобится
         materials: null, // Поле может быть добавлено позже если понадобится

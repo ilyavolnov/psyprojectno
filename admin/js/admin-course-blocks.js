@@ -33,7 +33,7 @@ window.initCourseBlocks = function(existingBlocks = []) {
 // Generate block HTML for editing
 function generateCourseBlockEditor(block, index) {
     const blockType = COURSE_BLOCK_TYPES[block.type] || { name: 'Неизвестный блок', icon: '📄' };
-    
+
     return `
         <div class="admin-block-item" data-block-index="${index}" draggable="false">
             <div class="admin-block-header">
@@ -66,15 +66,15 @@ function generateCourseBlockEditor(block, index) {
 function generateCourseBlockFields(block, index) {
     const type = block.type;
     const data = block.data || {};
-    
+
     switch(type) {
         case 'hero':
             return `
                 <div class="admin-form-group">
                     <label class="admin-form-label">Изображение</label>
                     <div class="admin-image-upload-container">
-                        <input type="text" class="admin-form-input course-block-field" 
-                               data-block-index="${index}" data-field="image" 
+                        <input type="text" class="admin-form-input course-block-field"
+                               data-block-index="${index}" data-field="image"
                                value="${data.image || ''}" placeholder="URL изображения">
                         <div class="admin-image-upload-buttons">
                             <button type="button" class="admin-btn-secondary" onclick="triggerCourseBlockImageUpload(${index}, 'image')">
@@ -90,23 +90,29 @@ function generateCourseBlockFields(block, index) {
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Название курса</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="title" 
+                    <input type="text" class="admin-form-input course-block-field"
+                           data-block-index="${index}" data-field="title"
                            value="${data.title || ''}" placeholder="Название курса">
                 </div>
                 <div class="admin-form-row">
                     <div class="admin-form-group">
                         <label class="admin-form-label">Цена (₽)</label>
-                        <input type="number" class="admin-form-input course-block-field" 
-                               data-block-index="${index}" data-field="price" 
+                        <input type="number" class="admin-form-input course-block-field"
+                               data-block-index="${index}" data-field="price"
                                value="${data.price || 0}">
                     </div>
                     <div class="admin-form-group">
-                        <label class="admin-form-label">Дата старта</label>
-                        <input type="text" class="admin-form-input course-block-field" 
-                               data-block-index="${index}" data-field="startDate" 
-                               value="${data.startDate || ''}" placeholder="10 ноября">
+                        <label class="admin-form-label">Зачеркнутая цена (₽)</label>
+                        <input type="number" class="admin-form-input course-block-field"
+                               data-block-index="${index}" data-field="oldPrice"
+                               value="${data.oldPrice || ''}" placeholder="Старая цена">
                     </div>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Дата старта</label>
+                    <input type="text" class="admin-form-input course-block-field"
+                           data-block-index="${index}" data-field="startDate"
+                           value="${data.startDate || ''}" placeholder="10 ноября">
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Инструкция по оплате</label>
@@ -115,14 +121,14 @@ function generateCourseBlockFields(block, index) {
                               placeholder="Инструкция по оплате">${data.paymentInstructions || ''}</textarea>
                 </div>
             `;
-            
+
         case 'description':
             return `
                 <div class="admin-form-group">
                     <label class="admin-form-label">Изображение</label>
                     <div class="admin-image-upload-container">
-                        <input type="text" class="admin-form-input course-block-field" 
-                               data-block-index="${index}" data-field="image" 
+                        <input type="text" class="admin-form-input course-block-field"
+                               data-block-index="${index}" data-field="image"
                                value="${data.image || ''}" placeholder="URL изображения">
                         <div class="admin-image-upload-buttons">
                             <button type="button" class="admin-btn-secondary" onclick="triggerCourseBlockImageUpload(${index}, 'image')">
@@ -138,8 +144,8 @@ function generateCourseBlockFields(block, index) {
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Заголовок</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="title" 
+                    <input type="text" class="admin-form-input course-block-field"
+                           data-block-index="${index}" data-field="title"
                            value="${data.title || ''}" placeholder="Заголовок">
                 </div>
                 <div class="admin-form-group">
@@ -150,19 +156,19 @@ function generateCourseBlockFields(block, index) {
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Тип контента</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="contentType" 
+                    <input type="text" class="admin-form-input course-block-field"
+                           data-block-index="${index}" data-field="contentType"
                            value="${data.contentType || ''}" placeholder="Лекция + презентация">
                 </div>
             `;
-            
+
         case 'program':
             const programItems = data.items || [];
             return `
                 <div class="admin-form-group">
                     <label class="admin-form-label">Заголовок блока</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="title" 
+                    <input type="text" class="admin-form-input course-block-field"
+                           data-block-index="${index}" data-field="title"
                            value="${data.title || 'Программа курса'}" placeholder="Заголовок">
                 </div>
                 <div class="admin-form-group">
@@ -172,15 +178,15 @@ function generateCourseBlockFields(block, index) {
                               placeholder="Пункт 1\nПункт 2\nПункт 3">${programItems.map(item => typeof item === 'string' ? item : item.text).join('\n')}</textarea>
                 </div>
             `;
-            
+
         case 'features':
             const featureItems = data.items || [];
             return `
                 <div class="admin-form-group">
                     <label class="admin-form-label">Изображение</label>
                     <div class="admin-image-upload-container">
-                        <input type="text" class="admin-form-input course-block-field" 
-                               data-block-index="${index}" data-field="image" 
+                        <input type="text" class="admin-form-input course-block-field"
+                               data-block-index="${index}" data-field="image"
                                value="${data.image || ''}" placeholder="URL изображения">
                         <div class="admin-image-upload-buttons">
                             <button type="button" class="admin-btn-secondary" onclick="triggerCourseBlockImageUpload(${index}, 'image')">
@@ -196,7 +202,7 @@ function generateCourseBlockFields(block, index) {
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Позиция изображения</label>
-                    <select class="admin-form-input course-block-field" 
+                    <select class="admin-form-input course-block-field"
                             data-block-index="${index}" data-field="imagePosition">
                         <option value="left" ${data.imagePosition === 'left' ? 'selected' : ''}>Слева</option>
                         <option value="right" ${data.imagePosition === 'right' ? 'selected' : ''}>Справа</option>
@@ -204,8 +210,8 @@ function generateCourseBlockFields(block, index) {
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Заголовок</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="title" 
+                    <input type="text" class="admin-form-input course-block-field"
+                           data-block-index="${index}" data-field="title"
                            value="${data.title || ''}" placeholder="Заголовок">
                 </div>
                 <div class="admin-form-group">
@@ -215,15 +221,15 @@ function generateCourseBlockFields(block, index) {
                               placeholder="Преимущество 1\nПреимущество 2">${featureItems.join('\n')}</textarea>
                 </div>
             `;
-            
+
         case 'author':
             const credentials = data.credentials || [];
             return `
                 <div class="admin-form-group">
                     <label class="admin-form-label">Фото автора</label>
                     <div class="admin-image-upload-container">
-                        <input type="text" class="admin-form-input course-block-field" 
-                               data-block-index="${index}" data-field="photo" 
+                        <input type="text" class="admin-form-input course-block-field"
+                               data-block-index="${index}" data-field="photo"
                                value="${data.photo || ''}" placeholder="URL изображения">
                         <div class="admin-image-upload-buttons">
                             <button type="button" class="admin-btn-secondary" onclick="triggerCourseBlockImageUpload(${index}, 'photo')">
@@ -239,8 +245,8 @@ function generateCourseBlockFields(block, index) {
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Имя автора</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="name" 
+                    <input type="text" class="admin-form-input course-block-field"
+                           data-block-index="${index}" data-field="name"
                            value="${data.name || ''}" placeholder="Имя автора">
                 </div>
                 <div class="admin-form-group">
@@ -250,7 +256,7 @@ function generateCourseBlockFields(block, index) {
                               placeholder="Регалия 1\nРегалия 2">${credentials.join('\n')}</textarea>
                 </div>
             `;
-            
+
         default:
             return '<p>Неизвестный тип блока</p>';
     }
@@ -260,9 +266,9 @@ function generateCourseBlockFields(block, index) {
 function renderCourseBlocks() {
     const container = document.getElementById('courseBlocksContainer');
     if (!container) return;
-    
+
     const blocks = window.currentCourseBlocks || [];
-    
+
     if (blocks.length === 0) {
         container.innerHTML = `
             <div class="admin-empty-state">
@@ -271,9 +277,9 @@ function renderCourseBlocks() {
         `;
         return;
     }
-    
+
     container.innerHTML = blocks.map((block, index) => generateCourseBlockEditor(block, index)).join('');
-    
+
     // Attach event listeners for field updates
     attachCourseBlockFieldListeners();
 }
@@ -296,8 +302,8 @@ function attachCourseBlockFieldListeners() {
                 blocks[blockIndex].data[fieldName] = this.value.split('\n').filter(item => item.trim());
             }
             // Handle number fields
-            else if (fieldName === 'price') {
-                blocks[blockIndex].data[fieldName] = parseInt(this.value) || 0;
+            else if (fieldName === 'price' || fieldName === 'oldPrice') {
+                blocks[blockIndex].data[fieldName] = parseInt(this.value) || (fieldName === 'oldPrice' ? '' : 0);
             }
             // Handle regular fields
             else {
@@ -334,10 +340,10 @@ function attachCourseBlockDragAndDrop() {
     const dragHandles = document.querySelectorAll('.admin-block-drag-handle');
     let draggedElement = null;
     let draggedIndex = null;
-    
+
     dragHandles.forEach((handle) => {
         const blockItem = handle.closest('.admin-block-item');
-        
+
         handle.addEventListener('dragstart', function(e) {
             draggedElement = blockItem;
             draggedIndex = parseInt(blockItem.dataset.blockIndex);
@@ -345,7 +351,7 @@ function attachCourseBlockDragAndDrop() {
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/html', blockItem.innerHTML);
         });
-        
+
         handle.addEventListener('dragend', function(e) {
             blockItem.style.opacity = '1';
             document.querySelectorAll('.admin-block-item').forEach(el => {
@@ -353,7 +359,7 @@ function attachCourseBlockDragAndDrop() {
             });
         });
     });
-    
+
     const blockItems = document.querySelectorAll('.admin-block-item');
     blockItems.forEach((item) => {
         item.addEventListener('dragover', function(e) {
@@ -364,32 +370,32 @@ function attachCourseBlockDragAndDrop() {
             }
             return false;
         });
-        
+
         item.addEventListener('dragenter', function(e) {
             if (this !== draggedElement) {
                 this.classList.add('drag-over');
             }
         });
-        
+
         item.addEventListener('dragleave', function(e) {
             this.classList.remove('drag-over');
         });
-        
+
         item.addEventListener('drop', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            
+
             if (this !== draggedElement && draggedElement) {
                 const dropIndex = parseInt(this.dataset.blockIndex);
                 const blocks = window.currentCourseBlocks || [];
-                
+
                 const [movedBlock] = blocks.splice(draggedIndex, 1);
                 blocks.splice(dropIndex, 0, movedBlock);
-                
+
                 window.currentCourseBlocks = blocks;
                 renderCourseBlocks();
             }
-            
+
             this.classList.remove('drag-over');
             return false;
         });
@@ -441,7 +447,7 @@ window.addCourseBlock = function(type) {
     blocks.push(newBlock);
     window.currentCourseBlocks = blocks;
     renderCourseBlocks();
-    
+
     // Scroll to new block
     setTimeout(() => {
         const newBlockEl = document.querySelector(`[data-block-index="${blocks.length - 1}"]`);
@@ -487,31 +493,31 @@ window.triggerCourseBlockImageUpload = function(blockIndex, fieldName) {
 window.handleCourseBlockImageUpload = async function(event, blockIndex, fieldName) {
     const file = event.target.files[0];
     if (!file) return;
-    
+
     if (!file.type.startsWith('image/')) {
         alert('Пожалуйста, выберите файл изображения');
         return;
     }
-    
+
     try {
         const formData = new FormData();
         formData.append('image', file);
-        
+
         const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
             method: 'POST',
             body: formData
         });
-        
+
         if (!response.ok) {
             throw new Error('Ошибка загрузки изображения');
         }
-        
+
         const data = await response.json();
-        
+
         if (!data.success) {
             throw new Error(data.error || 'Ошибка загрузки');
         }
-        
+
         // Update block data
         const blocks = window.currentCourseBlocks || [];
         if (!blocks[blockIndex].data) {
@@ -519,12 +525,12 @@ window.handleCourseBlockImageUpload = async function(event, blockIndex, fieldNam
         }
         blocks[blockIndex].data[fieldName] = data.data.path;
         window.currentCourseBlocks = blocks;
-        
+
         // Update the input field directly instead of re-rendering everything
         const inputField = document.querySelector(`input[data-block-index="${blockIndex}"][data-field="${fieldName}"]`);
         if (inputField) {
             inputField.value = data.data.path;
-            
+
             // Add or update preview image
             const container = inputField.closest('.admin-form-group');
             let preview = container.querySelector('.admin-image-preview');
@@ -536,14 +542,14 @@ window.handleCourseBlockImageUpload = async function(event, blockIndex, fieldNam
             const imagePath = data.data.path.startsWith('http') ? data.data.path : '/' + data.data.path;
             preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
         }
-        
+
         // Show success message
         showNotification('Изображение успешно загружено', 'success');
     } catch (error) {
         console.error('Error uploading image:', error);
         alert('Ошибка при загрузке изображения: ' + error.message);
     }
-    
+
     // Reset file input
     event.target.value = '';
 };
@@ -551,31 +557,31 @@ window.handleCourseBlockImageUpload = async function(event, blockIndex, fieldNam
 window.pasteCourseBlockImageFromClipboard = async function(blockIndex, fieldName) {
     try {
         const clipboardItems = await navigator.clipboard.read();
-        
+
         for (const item of clipboardItems) {
             const imageType = item.types.find(type => type.startsWith('image/'));
-            
+
             if (imageType) {
                 const blob = await item.getType(imageType);
-                
+
                 const formData = new FormData();
                 formData.append('image', blob, 'clipboard-image.png');
-                
+
                 const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 if (!response.ok) {
                     throw new Error('Ошибка загрузки изображения');
                 }
-                
+
                 const data = await response.json();
-                
+
                 if (!data.success) {
                     throw new Error(data.error || 'Ошибка загрузки');
                 }
-                
+
                 // Update block data
                 const blocks = window.currentCourseBlocks || [];
                 if (!blocks[blockIndex].data) {
@@ -583,12 +589,12 @@ window.pasteCourseBlockImageFromClipboard = async function(blockIndex, fieldName
                 }
                 blocks[blockIndex].data[fieldName] = data.data.path;
                 window.currentCourseBlocks = blocks;
-                
+
                 // Update the input field directly instead of re-rendering everything
                 const inputField = document.querySelector(`input[data-block-index="${blockIndex}"][data-field="${fieldName}"]`);
                 if (inputField) {
                     inputField.value = data.data.path;
-                    
+
                     // Add or update preview image
                     const container = inputField.closest('.admin-form-group');
                     let preview = container.querySelector('.admin-image-preview');
@@ -600,13 +606,13 @@ window.pasteCourseBlockImageFromClipboard = async function(blockIndex, fieldName
                     const imagePath = data.data.path.startsWith('http') ? data.data.path : '/' + data.data.path;
                     preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
                 }
-                
+
                 // Show success message
                 showNotification('Изображение успешно вставлено из буфера обмена', 'success');
                 return;
             }
         }
-        
+
         alert('В буфере обмена нет изображения');
     } catch (error) {
         console.error('Error pasting image:', error);

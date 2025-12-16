@@ -42,8 +42,7 @@ router.get('/courses', async (req, res) => {
             return {
                 ...course,
                 slug,
-                topics: course.topics ? JSON.parse(course.topics) : [],
-                has_certificate: Boolean(course.has_certificate)
+                topics: course.topics ? JSON.parse(course.topics) : []
             };
         });
 
@@ -75,7 +74,6 @@ router.get('/courses/slug/:slug', async (req, res) => {
 
         // Parse JSON fields
         course.topics = course.topics ? JSON.parse(course.topics) : [];
-        course.has_certificate = Boolean(course.has_certificate);
         // Keep page_blocks as string for frontend to parse
 
         res.json({
@@ -106,7 +104,6 @@ router.get('/courses/:id', async (req, res) => {
 
         // Parse JSON fields
         course.topics = course.topics ? JSON.parse(course.topics) : [];
-        course.has_certificate = Boolean(course.has_certificate);
 
         res.json({
             success: true,
@@ -125,9 +122,9 @@ router.get('/courses/:id', async (req, res) => {
 router.post('/courses', async (req, res) => {
     try {
         const {
-            title, subtitle, description, price, status, image,
+            title, subtitle, description, price, old_price, status, image,
             release_date, access_duration, feedback_duration,
-            has_certificate, whatsapp_number, topics, bonuses,
+            whatsapp_number, topics, bonuses,
             materials, author_name, author_description, page_blocks, type, start_date
         } = req.body;
 
@@ -142,17 +139,17 @@ router.post('/courses', async (req, res) => {
 
         const query = `
             INSERT INTO courses (
-                title, subtitle, description, price, status, image,
+                title, subtitle, description, price, old_price, status, image,
                 release_date, access_duration, feedback_duration,
-                has_certificate, whatsapp_number, topics, bonuses,
+                whatsapp_number, topics, bonuses,
                 materials, author_name, author_description, page_blocks, type, slug, start_date
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const result = await prepare(query).run(
-            title, subtitle, description, price || 0, status || 'available', image,
+            title, subtitle, description, price || 0, old_price || null, status || 'available', image,
             release_date, access_duration, feedback_duration,
-            has_certificate ? 1 : 0, whatsapp_number,
+            whatsapp_number,
             topics ? JSON.stringify(topics) : '[]',
             bonuses || null, materials || null, author_name, author_description,
             page_blocks || '[]',
@@ -196,9 +193,9 @@ router.put('/courses/:id', async (req, res) => {
             if (key === 'topics' && updates[key]) {
                 fields.push(`${key} = ?`);
                 values.push(JSON.stringify(updates[key]));
-            } else if (key === 'has_certificate') {
+            } else if (key === 'old_price') {
                 fields.push(`${key} = ?`);
-                values.push(updates[key] ? 1 : 0);
+                values.push(updates[key] || null);
             } else if (updates[key] !== undefined) {
                 fields.push(`${key} = ?`);
                 values.push(updates[key]);

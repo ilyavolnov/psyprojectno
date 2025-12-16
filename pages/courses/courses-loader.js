@@ -31,12 +31,17 @@ async function loadCourses() {
                                   item.status === 'preorder' ? 'Предзапись' :
                                   item.status === 'coming_soon' ? 'Скоро' : 'Завершен';
 
+                const formattedPrice = item.old_price ? `
+                    <span style="text-decoration: line-through; opacity: 0.7; font-size: 0.9em; display: block; margin-bottom: 5px;">${item.old_price} ₽</span>
+                    <span style="background-color: #e74c3c; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold; display: inline-block;">${item.price} ₽</span>
+                ` : `${item.price} ₽`;
+
                 itemElement.innerHTML = `
                     <div class="course-item-content">
                         <span class="course-number">${String(index + 1).padStart(2, '0')}</span>
                         <h3 class="course-name">${item.title}</h3>
                         <span class="course-status ${statusClass}">${statusText}</span>
-                        <span class="course-price">${item.price} ₽</span>
+                        <span class="course-price">${formattedPrice}</span>
                     </div>
                 `;
 

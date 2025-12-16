@@ -81,8 +81,12 @@ function renderCourse(course, blocks) {
                     <h1>${course.title}</h1>
                     <p>${course.description}</p>
                     <div class="course-info">
-                        <span class="course-price">${course.price.toLocaleString('ru-RU')} ₽</span>
-                        <button class="cta-button">Записаться на курс</button>
+                        ${course.old_price ? `
+                        <span class="course-price">
+                            <span style="text-decoration: line-through; opacity: 0.7;">${course.old_price.toLocaleString('ru-RU')} ₽</span>
+                            <span style="margin-left: 10px; background-color: #e74c3c; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold;">${course.price.toLocaleString('ru-RU')} ₽</span>
+                        </span>` : `<span class="course-price">${course.price.toLocaleString('ru-RU')} ₽</span>`}
+                        <button class="cta-button" onclick="openCourseRegistration('${course.title}', ${course.price}, '${course.type || 'course'}', ${course.id || 0})">Записаться на курс</button>
                     </div>
                 </div>
             </div>
@@ -148,11 +152,15 @@ function renderHeroBlock(data, course) {
                     ` : ''}
 
                     <div class="course-hero-info">
-                        <span class="course-hero-price">${data.price.toLocaleString('ru-RU')} ₽</span>
+                        ${data.oldPrice ? `
+                        <span class="course-hero-price">
+                            <span style="text-decoration: line-through; opacity: 0.7;">${data.oldPrice.toLocaleString('ru-RU')} ₽</span>
+                            <span style="margin-left: 10px; background-color: #e74c3c; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold;">${data.price.toLocaleString('ru-RU')} ₽</span>
+                        </span>` : `<span class="course-hero-price">${data.price.toLocaleString('ru-RU')} ₽</span>`}
                         ${data.startDate ? `<span class="course-hero-date">СТАРТ ${data.startDate}</span>` : ''}
                     </div>
                     <div class="course-hero-buttons">
-                        <button class="course-hero-button" onclick="openCourseRegistration('${course.title}', '${course.price}', '${course.type || 'course'}', ${course.id || 0})">
+                        <button class="course-hero-button" onclick="openCourseRegistration('${course.title}', ${course.price}, '${course.type || 'course'}', ${course.id || 0})">
                             Записаться
                         </button>
                     </div>

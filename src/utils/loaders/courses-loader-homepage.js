@@ -189,7 +189,10 @@ function createCourseElement(course, number) {
     }
 
     // Format price with proper spacing
-    const formattedPrice = new Intl.NumberFormat('ru-RU').format(course.price) + ' ₽';
+    const formattedPrice = course.old_price ? `
+        <span style="text-decoration: line-through; opacity: 0.7; font-size: 0.9em; display: block; margin-bottom: 5px;">${new Intl.NumberFormat('ru-RU').format(course.old_price)} ₽</span>
+        <span style="background-color: #e74c3c; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold; display: inline-block;">${new Intl.NumberFormat('ru-RU').format(course.price)} ₽</span>
+    ` : new Intl.NumberFormat('ru-RU').format(course.price) + ' ₽';
 
     courseElement.innerHTML = `
         <div class="course-item-content">

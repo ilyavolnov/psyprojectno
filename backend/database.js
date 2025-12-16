@@ -85,6 +85,7 @@ async function initDatabase() {
             subtitle TEXT,
             description TEXT,
             price INTEGER,
+            old_price INTEGER,
             status TEXT DEFAULT 'available',
             image TEXT,
             release_date TEXT,
@@ -151,6 +152,18 @@ async function initDatabase() {
             db.run("ALTER TABLE courses ADD COLUMN type TEXT DEFAULT 'course'");
             console.log('✅ Added type column to courses table');
         }
+
+        // Check if old_price column exists
+        const hasOldPrice = tableInfo[0]?.values.some(col => col[1] === 'old_price');
+        if (!hasOldPrice) {
+            db.run('ALTER TABLE courses ADD COLUMN old_price INTEGER');
+            console.log('✅ Added old_price column to courses table');
+        }
+
+        // Update has_certificate column to default to 0 (disabled) for existing functionality removal
+        // We're not removing the column to maintain backward compatibility
+        // but we'll effectively disable the certificate functionality by default
+        db.run("UPDATE courses SET has_certificate = 0 WHERE has_certificate = 1");
     } catch (error) {
         console.log('ℹ️  Migration check:', error.message);
     }

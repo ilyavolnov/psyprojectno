@@ -46,7 +46,10 @@ window.loadWebinars = async function() {
                             <h3 class="admin-course-title">${webinar.title}</h3>
                             <p class="admin-course-description">${webinar.subtitle || webinar.description || ''}</p>
                             <div class="admin-course-meta">
-                                <span>💰 ${webinar.price ? webinar.price.toLocaleString('ru-RU') + ' ₽' : 'Бесплатно'}</span>
+                                <span>💰 ${webinar.old_price ?
+                                    `<span style="text-decoration: line-through; opacity: 0.7;">${webinar.old_price.toLocaleString('ru-RU')} ₽</span> ` +
+                                    `<span style="background-color: #e74c3c; color: white; padding: 2px 8px; border-radius: 4px;">${webinar.price.toLocaleString('ru-RU')} ₽</span>` :
+                                    (webinar.price ? webinar.price.toLocaleString('ru-RU') + ' ₽' : 'Бесплатно')}</span>
                                 <span>📅 ${webinar.release_date || 'Не указано'}</span>
                             </div>
                         </div>
@@ -466,6 +469,12 @@ function openWebinarPopup(webinar = null) {
                     <input type="number" class="admin-form-input" id="webinarPrice" value="${webinar?.price || ''}" required>
                 </div>
                 <div class="admin-form-group">
+                    <label class="admin-form-label">Зачеркнутая цена (₽)</label>
+                    <input type="number" class="admin-form-input" id="webinarOldPrice" value="${webinar?.old_price || ''}" placeholder="Старая цена">
+                </div>
+            </div>
+            <div class="admin-form-row">
+                <div class="admin-form-group">
                     <label class="admin-form-label">Статус</label>
                     <select class="admin-form-input" id="webinarStatus">
                         <option value="available" ${webinar?.status === 'available' ? 'selected' : ''}>Доступен</option>
@@ -535,13 +544,6 @@ function openWebinarPopup(webinar = null) {
                 </div>
             </div>
 
-            <div class="admin-form-group">
-                <label class="admin-toggle-label">
-                    <input type="checkbox" id="webinarHasCertificate" class="admin-toggle-input" ${webinar?.has_certificate ? 'checked' : ''}>
-                    <span class="admin-toggle-slider"></span>
-                    <span class="admin-toggle-text">Выдается сертификат</span>
-                </label>
-            </div>
 
             <div class="admin-form-group">
                 <label class="admin-form-label">Автор вебинара</label>
@@ -652,13 +654,13 @@ window.saveWebinar = async function(webinarId) {
         subtitle: document.getElementById('webinarSubtitle').value,
         description: document.getElementById('webinarDescription').value,
         price: parseInt(document.getElementById('webinarPrice').value),
+        old_price: document.getElementById('webinarOldPrice').value ? parseInt(document.getElementById('webinarOldPrice').value) : null,
         status: document.getElementById('webinarStatus').value,
         image: document.getElementById('webinarImage').value,
         release_date: document.getElementById('webinarReleaseDate').value,
         start_date: document.getElementById('webinarStartDate').value,
         access_duration: document.getElementById('webinarAccessDuration').value,
         feedback_duration: document.getElementById('webinarFeedbackDuration').value,
-        has_certificate: document.getElementById('webinarHasCertificate').checked,
         whatsapp_number: document.getElementById('webinarWhatsapp').value,
         topics: topics,
         author_name: document.getElementById('webinarAuthorName').value,
@@ -919,6 +921,14 @@ function generateWebinarBlockFields(block, index) {
                                value="${data.price || 0}">
                     </div>
                     <div class="admin-form-group">
+                        <label class="admin-form-label">Зачеркнутая цена (₽)</label>
+                        <input type="number" class="admin-form-input webinar-block-field"
+                               data-block-index="${index}" data-field="oldPrice"
+                               value="${data.oldPrice || ''}" placeholder="Старая цена">
+                    </div>
+                </div>
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
                         <label class="admin-form-label">Дата старта</label>
                         <input type="text" class="admin-form-input webinar-block-field"
                                data-block-index="${index}" data-field="startDate"
@@ -1091,8 +1101,8 @@ function attachWebinarBlockFieldListeners() {
                 blocks[blockIndex].data[fieldName] = this.value.split('\n').filter(item => item.trim());
             }
             // Handle number fields
-            else if (fieldName === 'price') {
-                blocks[blockIndex].data[fieldName] = parseInt(this.value) || 0;
+            else if (fieldName === 'price' || fieldName === 'oldPrice') {
+                blocks[blockIndex].data[fieldName] = parseInt(this.value) || (fieldName === 'oldPrice' ? '' : 0);
             }
             // Handle regular fields
             else {
@@ -1233,7 +1243,7 @@ window.addWebinarBlock = function(type) {
 function getDefaultWebinarBlockData(type) {
     switch (type) {
         case 'hero':
-            return { image: '', title: '', price: 0, startDate: '', paymentInstructions: '' };
+            return { image: '', title: '', price: 0, oldPrice: '', startDate: '', paymentInstructions: '' };
         case 'description':
             return { image: '', title: '', subtitle: '', contentType: '' };
         case 'program':
