@@ -5,7 +5,7 @@ const path = require('path');
 // Конфигурация
 const SPECIALISTS_JSON = path.join(__dirname, '..', 'specialists-data.json');
 const IMAGES_DIR = path.join(__dirname, '..', 'images', 'specialists');
-const SOURCE_URL = 'https://dr-rumyantceva.ru/specialists/';
+const SOURCE_URL = 'https://new.dr-rumyantceva.ru/specialists/';
 
 // Создаем директорию
 if (!fs.existsSync(IMAGES_DIR)) {
@@ -80,9 +80,9 @@ function parseSpecialistImages(html) {
             
             // Делаем URL абсолютным
             if (imgUrl.startsWith('/')) {
-                imgUrl = 'https://dr-rumyantceva.ru' + imgUrl;
+                imgUrl = 'https://new.dr-rumyantceva.ru' + imgUrl;
             } else if (!imgUrl.startsWith('http')) {
-                imgUrl = 'https://dr-rumyantceva.ru/' + imgUrl;
+                imgUrl = 'https://new.dr-rumyantceva.ru/' + imgUrl;
             }
             
             images.push(imgUrl);
@@ -101,9 +101,9 @@ function parseSpecialistImages(html) {
                 imgUrl.match(/\d+\.(jpg|jpeg|png|webp)/i)) {
                 
                 if (imgUrl.startsWith('/')) {
-                    imgUrl = 'https://dr-rumyantceva.ru' + imgUrl;
+                    imgUrl = 'https://new.dr-rumyantceva.ru' + imgUrl;
                 } else if (!imgUrl.startsWith('http')) {
-                    imgUrl = 'https://dr-rumyantceva.ru/' + imgUrl;
+                    imgUrl = 'https://new.dr-rumyantceva.ru/' + imgUrl;
                 }
                 
                 images.push(imgUrl);

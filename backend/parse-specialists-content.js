@@ -4,7 +4,7 @@ const path = require('path');
 
 const SPECIALISTS_JSON = path.join(__dirname, '..', 'specialists-data.json');
 const OUTPUT_FILE = path.join(__dirname, '..', 'specialists-content.md');
-const BASE_URL = 'https://dr-rumyantceva.ru/specialists/';
+const BASE_URL = 'https://new.dr-rumyantceva.ru/specialists/';
 
 // Маппинг имен специалистов к их slug на сайте
 const SPECIALIST_SLUGS = {
