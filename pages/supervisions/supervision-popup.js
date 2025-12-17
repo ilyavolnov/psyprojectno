@@ -103,13 +103,13 @@ async function loadSupervisionsFromAPI() {
 function openSupervisionPopup(supervisionId) {
     const popup = document.getElementById('supervisionPopup');
     if (!popup) return;
-
+    
     // Load supervision data
     const supervision = supervisionsData[supervisionId];
     if (supervision) {
         populateSupervisionPopup(supervision);
     }
-
+    
     // Show popup
     popup.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -119,7 +119,7 @@ function openSupervisionPopup(supervisionId) {
 function closeSupervisionPopup() {
     const popup = document.getElementById('supervisionPopup');
     if (!popup) return;
-
+    
     popup.classList.remove('active');
     document.body.style.overflow = '';
 }
@@ -130,14 +130,14 @@ function populateSupervisionPopup(supervision) {
     document.getElementById('popupExperience').textContent = supervision.experience;
     document.getElementById('popupPrice').innerHTML = `${supervision.price.toLocaleString('ru-RU')} ₽${supervision.priceNote ? '<br><small>' + supervision.priceNote + '</small>' : ''}`;
     document.getElementById('popupDuration').textContent = supervision.duration;
-
+    
     // Description
     document.getElementById('popupDescription').innerHTML = `
         ${supervision.supervisors ? `<p><strong>Ведущие:</strong> ${supervision.supervisors}</p>` : ''}
         ${supervision.date ? `<p><strong>Дата:</strong> ${supervision.date}</p>` : ''}
         <p>${supervision.description}</p>
     `;
-
+    
     // Features
     if (supervision.features && supervision.features.length > 0) {
         const featuresHtml = `
@@ -151,10 +151,10 @@ function populateSupervisionPopup(supervision) {
     } else {
         document.getElementById('popupEducation').innerHTML = '';
     }
-
+    
     // Store supervision data for request
     window.currentSupervision = supervision;
-
+    
     // Payment button - open request form using the standard consultation form
     const payButton = document.getElementById('popupPayButton');
     payButton.textContent = 'Записаться на супервизию';
@@ -178,7 +178,7 @@ function openSupervisionRequestForm(supervision) {
             <h2 class="consultation-popup-title">Запись на супервизию</h2>
             <p class="consultation-popup-subtitle">${supervision.title}</p>
             <p class="consultation-popup-price">${supervision.price.toLocaleString('ru-RU')} ₽</p>
-
+            
             <form class="consultation-form" id="supervisionRequestForm">
                 <div class="form-group">
                     <input type="text" name="name" placeholder="Ваше имя *" required>
@@ -196,27 +196,27 @@ function openSupervisionRequestForm(supervision) {
             </form>
         </div>
     `;
-
+    
     document.body.appendChild(formPopup);
     document.body.style.overflow = 'hidden';
-
+    
     // Close handlers
     const closeBtn = formPopup.querySelector('.consultation-popup-close');
     const overlay = formPopup.querySelector('.consultation-popup-overlay');
-
+    
     const closeForm = () => {
         formPopup.remove();
         document.body.style.overflow = '';
     };
-
+    
     closeBtn.addEventListener('click', closeForm);
     overlay.addEventListener('click', closeForm);
-
+    
     // Form submit
     const form = document.getElementById('supervisionRequestForm');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-
+        
         const formData = new FormData(form);
         const data = {
             name: formData.get('name'),
@@ -226,7 +226,7 @@ function openSupervisionRequestForm(supervision) {
             request_type: 'supervision',
             supervision_id: supervision.id
         };
-
+        
         try {
             const response = await fetch(API_CONFIG.getApiUrl('requests'), {
                 method: 'POST',
@@ -263,9 +263,9 @@ function showSuccessMessage() {
             </button>
         </div>
     `;
-
+    
     document.body.appendChild(successPopup);
-
+    
     setTimeout(() => {
         successPopup.remove();
         document.body.style.overflow = '';

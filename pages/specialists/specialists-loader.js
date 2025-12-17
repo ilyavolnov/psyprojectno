@@ -212,4 +212,31 @@ document.addEventListener('DOMContentLoaded', () => {
         new SpecialistsManager();
     }
 
+    // Parallax effect for clouds
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        const clouds = document.querySelectorAll('[data-parallax]');
+
+        clouds.forEach((cloud) => {
+            const section = cloud.closest('section');
+
+            if (section) {
+                gsap.fromTo(cloud,
+                    {
+                        y: 0,
+                        x: 0
+                    },
+                    {
+                        y: -80,
+                        x: 20,
+                        scrollTrigger: {
+                            trigger: section,
+                            start: 'top bottom',
+                            end: 'bottom top',
+                            scrub: 1.5
+                        }
+                    }
+                );
+            }
+        });
+    }
 });

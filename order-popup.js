@@ -149,7 +149,6 @@ window.applyPromo = async function() {
     }
 
     try {
-        // Validate promo code via API
         const response = await fetch(API_CONFIG.getApiUrl('promo-codes/validate'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

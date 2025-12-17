@@ -10,18 +10,6 @@ async function loadHomepageCourses() {
         console.log('Homepage courses and webinars loaded:', data);
 
         if (data.success && data.data) {
-            // Log specific courses for debugging
-            const tsunamiCourse = data.data.find(item => item.title && item.title.includes('Цунами'));
-            const lavaCourse = data.data.find(item => item.title && item.title.includes('Лавина'));
-
-            if (tsunamiCourse) {
-                console.log('Tsunami course found:', tsunamiCourse.title, 'status:', tsunamiCourse.status);
-            }
-
-            if (lavaCourse) {
-                console.log('Lava course found:', lavaCourse.title, 'status:', lavaCourse.status);
-            }
-
             // Filter courses (not webinars) and webinars separately
             const allCourses = data.data.filter(item =>
                 item.type !== 'webinar' &&  // Exclude webinars from main courses list
