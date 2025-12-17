@@ -4644,6 +4644,21 @@ pecialists Page */
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
+.supervision-image-placeholder {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.supervision-image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 .supervision-card-free {
     background: linear-gradient(135deg, var(--color-blue) 0%, #5a9fd4 100%);
     color: var(--color-white);
