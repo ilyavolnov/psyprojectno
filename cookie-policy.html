@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Политика использования файлов Cookie</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .cookie-policy {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 40px 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            line-height: 1.8;
+        }
+
+        .cookie-policy h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .cookie-policy h2 {
+            margin: 25px 0 15px 0;
+            font-size: 20px;
+            color: #555;
+        }
+
+        .cookie-policy p {
+            margin: 10px 0;
+            text-align: justify;
+        }
+
+        .cookie-policy ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .cookie-policy li {
+            margin: 8px 0;
+        }
+
+        .cookie-policy a {
+            color: #007bff;
+        }
+
+        .cookie-policy .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .cookie-policy .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <main class="cookie-policy">
+        <a href="index.html" class="back-link">← На главную</a>
+
+        <h1>Политика использования файлов Cookie</h1>
+
+        <p>Настоящая Политика использования файлов Cookie описывает, как сайт https://dr-rumyantceva.ru/ (далее — Сайт) использует файлы cookie и другие схожие технологии на нашем веб-сайте.</p>
+
+        <h2>Что такое файлы cookie?</h2>
+        <p>Файлы cookie — это небольшие текстовые файлы, которые размещаются на вашем устройстве (компьютере, смартфоне и т.д.) при посещении веб-сайта. Они позволяют веб-сайту запоминать ваши действия и предпочтения (такие как язык, шрифт, другие настройки и т.д.) на определенный период времени, так что вам не нужно снова вводить их при повторном посещении сайта или при переходе с одной страницы сайта на другую.</p>
+
+        <h2>Какие файлы cookie мы используем?</h2>
+        <p>Мы можем использовать файлы cookie следующих типов:</p>
+        <ul>
+            <li><strong>Необходимые файлы cookie</strong> — Эти файлы cookie необходимы для работы сайта и его функций. Без них предоставление услуг невозможно.</li>
+            <li><strong>Файлы cookie для аналитики</strong> — Эти файлы cookie позволяют собирать статистику посещений и использования сайта, чтобы улучшать его функциональность.</li>
+            <li><strong>Файлы cookie функциональности</strong> — Эти файлы cookie позволяют сайту запоминать сделанный вами выбор (например, язык или региональные настройки) и предоставлять расширенную функциональность.</li>
+        </ul>
+
+        <h2>Сторонние файлы cookie</h2>
+        <p>Мы можем использовать сторонние сервисы, которые также могут устанавливать файлы cookie на ваше устройство. Например, сервисы аналитики, социальные сети и другие.</p>
+
+        <h2>Как управлять файлами cookie?</h2>
+        <p>Вы можете контролировать и/или удалять файлы cookie по своему усмотрению. Для получения дополнительной информации посетите сайт aboutcookies.org. Вы можете удалить все файлы cookie, которые уже находятся на вашем компьютере, и настроить большинство браузеров на блокировку установки файлов cookie. Однако имейте в виду, что в этом случае вам, возможно, придется вручную настраивать определенные параметры при каждом посещении веб-сайта, а некоторые сервисы и функции могут не работать должным образом.</p>
+
+        <h2>Обновления политики</h2>
+        <p>Мы можем время от времени обновлять настоящую Политику использования файлов Cookie. Мы рекомендуем вам периодически просматривать эту страницу, чтобы быть в курсе того, как мы используем файлы cookie. Использование сайта означает согласие с обновленной Политикой использования файлов Cookie.</p>
+
+        <h2>Свяжитесь с нами</h2>
+        <p>Если у вас есть какие-либо вопросы о нашей Политике использования файлов Cookie, пожалуйста, свяжитесь с нами по адресу: dr.rumyantceva@gmail.com</p>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Consultation Popup -->
+    <div class="popup-overlay" id="consultationPopup">
+        <div class="popup-content">
+            <button class="popup-close" id="closePopup">&times;</button>
+            <h2 class="popup-title">Оставить заявку</h2>
+            <p class="popup-subtitle">Заполните форму, и мы свяжемся с вами в течение 24 часов</p>
+
+            <form class="popup-form" id="consultationForm">
+                <div class="form-group">
+                    <label for="name">Ваше имя *</label>
+                    <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Телефон *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+7 (___) ___-__-__">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="example@mail.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="requestType">Тип заявки *</label>
+                    <select id="requestType" name="requestType" required>
+                        <option value="">Выберите тип заявки</option>
+                        <option value="urgent">Срочная консультация</option>
+                        <option value="family">Семейная сессия в 4 руки</option>
+                        <option value="specialist">Запись к специалисту</option>
+                        <option value="consultation">Консультация</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Комментарий</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Расскажите о вашем запросе"></textarea>
+                </div>
+
+                <div class="order-agreements">
+                    <label class="order-checkbox-label">
+                        <input type="checkbox" class="order-checkbox" id="privacyPolicy" name="privacyPolicy" required>
+                        <span>Я ознакомлен(а) и согласен(а) с <a href="privacy-policy.html" target="_blank">Политикой конфиденциальности</a></span>
+                    </label>
+                    <label class="order-checkbox-label">
+                        <input type="checkbox" class="order-checkbox" id="personalDataPolicy" name="personalDataPolicy" required>
+                        <span>Я даю согласие на <a href="personal-data-policy.html" target="_blank">обработку моих персональных данных</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="popup-submit-btn">
+                    <span>Отправить заявку</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="includes/load-components.js" defer></script>
+    <script src="consultation-popup.js"></script>
+</body>
+</html>

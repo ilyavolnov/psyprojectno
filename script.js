@@ -757,3 +757,42 @@ function showNotification(message, type = 'success') {
         }, 300);
     }, 5000);
 }
+
+// Cookie Consent Popup
+function initCookieConsent() {
+    // Check if user has already consented to cookies
+    if (localStorage.getItem('cookieConsent') === 'true') {
+        return; // Don't show the popup if consent has already been given
+    }
+
+    // Create cookie consent popup
+    const cookiePopup = document.createElement('div');
+    cookiePopup.className = 'cookie-consent';
+    cookiePopup.innerHTML = `
+        <div class="cookie-consent-content">
+            Мы используем файлы cookie для улучшения работы сайта. Продолжая использовать наш сайт, вы соглашаетесь с <a href="cookie-policy.html" target="_blank">политикой использования файлов cookie</a>.
+        </div>
+        <div class="cookie-consent-buttons">
+            <button class="cookie-consent-btn accept">Принять</button>
+        </div>
+    `;
+
+    document.body.appendChild(cookiePopup);
+
+    // Add event listener to the accept button
+    const acceptBtn = cookiePopup.querySelector('.cookie-consent-btn.accept');
+    acceptBtn.addEventListener('click', () => {
+        // Set cookie consent in localStorage
+        localStorage.setItem('cookieConsent', 'true');
+
+        // Fade out and remove the popup
+        cookiePopup.style.transition = 'opacity 0.3s ease';
+        cookiePopup.style.opacity = '0';
+        setTimeout(() => {
+            cookiePopup.remove();
+        }, 300);
+    });
+}
+
+// Initialize cookie consent when DOM is loaded
+document.addEventListener('DOMContentLoaded', initCookieConsent);

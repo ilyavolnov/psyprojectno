@@ -6375,6 +6375,77 @@ pecialists Page */
     }
 }
 
+/* Cookie Consent Popup */
+.cookie-consent {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 350px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    z-index: 10000;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.cookie-consent-content {
+    margin-bottom: 15px;
+}
+
+.cookie-consent a {
+    color: var(--color-blue);
+    text-decoration: none;
+}
+
+.cookie-consent a:hover {
+    text-decoration: underline;
+}
+
+.cookie-consent-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.cookie-consent-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.cookie-consent-btn.accept {
+    background: var(--color-blue);
+    color: white;
+}
+
+.cookie-consent-btn.accept:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .cookie-consent {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+    }
+
+    .cookie-consent-buttons {
+        flex-direction: column;
+    }
+
+    .cookie-consent-btn {
+        width: 100%;
+    }
+}
+
 
 /* Supervision Details Popup */
 .supervision-details-popup {
