@@ -147,13 +147,27 @@ window.openSupervisionPopup = async function(id = null) {
                 </div>
                 
                 <div class="admin-form-group">
+                    <label class="admin-form-label">Изображение</label>
+                    <div class="admin-photo-upload">
+                        <img src="${supervision?.image ? (supervision.image.startsWith('http') ? supervision.image : '/' + supervision.image) : '/images/hero-page.webp'}" alt="Preview" id="supervisionImagePreview" class="admin-photo-preview" onerror="this.src='/images/hero-page.webp'">
+                        <div class="admin-photo-controls">
+                            <input type="file" id="supervisionPhotoFile" accept="image/*" style="display: none;" onchange="handleSupervisionPhotoUpload(event)">
+                            <button type="button" class="admin-btn admin-btn-secondary" onclick="document.getElementById('supervisionPhotoFile').click()">
+                                📁 Загрузить файл
+                            </button>
+                            <input type="text" class="admin-form-input" id="supervisionImage" value="${supervision?.image || ''}" placeholder="или введите URL изображения">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-form-group">
                     <label class="admin-form-label">Статус</label>
                     <select class="admin-form-input" id="supervisionStatus">
                         <option value="active" ${!supervision || supervision.status === 'active' ? 'selected' : ''}>Активна</option>
                         <option value="inactive" ${supervision?.status === 'inactive' ? 'selected' : ''}>Неактивна</option>
                     </select>
                 </div>
-                
+
                 <div class="admin-form-actions">
                     <button type="button" class="admin-btn admin-btn-secondary" onclick="closeSupervisionPopup()">Отмена</button>
                     <button type="submit" class="admin-btn admin-btn-primary">💾 ${supervision ? 'Сохранить' : 'Создать'}</button>
@@ -187,6 +201,7 @@ window.saveSupervision = async function(id) {
             description: document.getElementById('supervisionDescription').value,
             features: document.getElementById('supervisionFeatures').value.split('\n').filter(f => f.trim()),
             bonus: document.getElementById('supervisionBonus').value,
+            image: document.getElementById('supervisionImage').value,
             status: document.getElementById('supervisionStatus').value
         };
         
@@ -237,3 +252,81 @@ window.deleteSupervision = async function(id) {
         await adminError('Ошибка удаления супервизии');
     }
 };
+
+// Photo upload handler for supervisions
+window.handleSupervisionPhotoUpload = async function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+        await adminError('Пожалуйста, выберите изображение');
+        return;
+    }
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        await adminError('Файл слишком большой. Максимум 5MB');
+        return;
+    }
+
+    // Show loading state
+    const preview = document.getElementById('supervisionImagePreview');
+    const photoInput = document.getElementById('supervisionImage');
+    const originalSrc = preview?.src;
+
+    if (preview) {
+        preview.style.opacity = '0.5';
+    }
+
+    try {
+        // Upload to server
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch(API_CONFIG.getApiUrl('upload/image'), {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Update preview and input with uploaded image path
+            if (preview) {
+                preview.src = '/' + result.data.path;  // Use absolute path from site root
+                preview.style.opacity = '1';
+            }
+            if (photoInput) {
+                photoInput.value = result.data.path;
+            }
+
+            await adminSuccess('Фото загружено успешно!');
+        } else {
+            throw new Error(result.error || 'Upload failed');
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        await adminError('Ошибка загрузки: ' + error.message);
+
+        // Restore original preview
+        if (preview && originalSrc) {
+            preview.src = originalSrc;
+            preview.style.opacity = '1';
+        }
+    }
+};
+
+// Update image preview when URL is entered manually
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener for image URL input (this will handle dynamic content as well)
+    document.addEventListener('input', function(e) {
+        if (e.target.id === 'supervisionImage') {
+            const preview = document.getElementById('supervisionImagePreview');
+            const value = e.target.value;
+            if (preview && value) {
+                preview.src = value.startsWith('http') ? value : '/' + value;
+            }
+        }
+    });
+});

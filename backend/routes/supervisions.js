@@ -60,7 +60,7 @@ router.post('/supervisions', async (req, res) => {
     try {
         const {
             title, supervisors, date, experience, price, duration,
-            price_note, description, features, bonus, status
+            price_note, description, features, bonus, image, status
         } = req.body;
 
         if (!title) {
@@ -73,16 +73,17 @@ router.post('/supervisions', async (req, res) => {
         const query = `
             INSERT INTO supervisions (
                 title, supervisors, date, experience, price, duration,
-                price_note, description, features, bonus, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                price_note, description, features, bonus, image, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const result = await prepare(query).run(
             title, supervisors || '', date || null, experience || '',
             price || 0, duration || '', price_note || null,
-            description || '', 
+            description || '',
             features ? JSON.stringify(features) : '[]',
             bonus || null,
+            image || null,
             status || 'active'
         );
 
@@ -115,6 +116,9 @@ router.put('/supervisions/:id', async (req, res) => {
             if (key === 'features') {
                 fields.push(`${key} = ?`);
                 values.push(JSON.stringify(updates[key]));
+            } else if (key === 'image') {
+                fields.push(`${key} = ?`);
+                values.push(updates[key] || null);
             } else if (updates[key] !== undefined) {
                 fields.push(`${key} = ?`);
                 values.push(updates[key]);
