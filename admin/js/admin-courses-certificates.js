@@ -503,9 +503,10 @@ function openCoursePopup(course = null) {
                 <div class="admin-form-group">
                     <label class="admin-form-label">Статус</label>
                     <select class="admin-form-input" id="courseStatus">
-                        <option value="available" ${course?.status === 'available' ? 'selected' : ''}>Доступен</option>
-                        <option value="coming_soon" ${course?.status === 'coming_soon' ? 'selected' : ''}>Скоро</option>
-                        <option value="sold_out" ${course?.status === 'sold_out' ? 'selected' : ''}>Продано</option>
+                        <option value="preorder" ${course?.status === 'preorder' ? 'selected' : ''}>Предзапись на следующий поток</option>
+                        <option value="upcoming" ${course?.status === 'upcoming' ? 'selected' : ''}>Старт такого-то числа</option>
+                        <option value="available" ${course?.status === 'available' ? 'selected' : ''}>В доступе</option>
+                        <option value="closed" ${course?.status === 'closed' ? 'selected' : ''}>Продажи закрыты</option>
                     </select>
                 </div>
             </div>

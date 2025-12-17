@@ -24,12 +24,34 @@ async function loadCourses() {
                 itemElement.dataset.description = item.description || '';
                 itemElement.dataset.courseId = item.id;
 
-                const statusClass = item.status === 'available' ? 'status-available' :
-                                   item.status === 'preorder' ? 'status-preorder' :
-                                   item.status === 'coming_soon' ? 'status-preorder' : 'status-completed';
-                const statusText = item.status === 'available' ? 'В доступе' :
-                                  item.status === 'preorder' ? 'Предзапись' :
-                                  item.status === 'coming_soon' ? 'Скоро' : 'Завершен';
+                let statusClass, statusText;
+                switch (item.status) {
+                    case 'preorder':
+                    case 'coming_soon':
+                        statusClass = 'status-preorder';
+                        statusText = 'Предзапись на следующий поток';
+                        break;
+                    case 'upcoming':
+                        statusClass = 'status-preorder';
+                        statusText = item.release_date ? `Старт ${item.release_date}` : 'Старт такого-то числа';
+                        break;
+                    case 'available':
+                        statusClass = 'status-available';
+                        statusText = 'В доступе';
+                        break;
+                    case 'closed':
+                    case 'sold_out':
+                        statusClass = 'status-completed';
+                        statusText = 'Продажи закрыты';
+                        break;
+                    case 'completed':
+                        statusClass = 'status-completed';
+                        statusText = 'Завершен';
+                        break;
+                    default:
+                        statusClass = 'status-available';
+                        statusText = 'В доступе';
+                }
 
                 const formattedPrice = item.old_price ? `
                     <span style="text-decoration: line-through; opacity: 0.7; font-size: 0.9em; display: block; margin-bottom: 5px;">${item.old_price} ₽</span>

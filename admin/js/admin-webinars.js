@@ -503,9 +503,10 @@ function openWebinarPopup(webinar = null) {
                 <div class="admin-form-group">
                     <label class="admin-form-label">Статус</label>
                     <select class="admin-form-input" id="webinarStatus">
-                        <option value="available" ${webinar?.status === 'available' ? 'selected' : ''}>Доступен</option>
-                        <option value="coming_soon" ${webinar?.status === 'coming_soon' ? 'selected' : ''}>Скоро</option>
-                        <option value="sold_out" ${webinar?.status === 'sold_out' ? 'selected' : ''}>Продано</option>
+                        <option value="preorder" ${webinar?.status === 'preorder' ? 'selected' : ''}>Предзапись на следующий поток</option>
+                        <option value="upcoming" ${webinar?.status === 'upcoming' ? 'selected' : ''}>Старт такого-то числа</option>
+                        <option value="available" ${webinar?.status === 'available' ? 'selected' : ''}>В доступе</option>
+                        <option value="closed" ${webinar?.status === 'closed' ? 'selected' : ''}>Продажи закрыты</option>
                     </select>
                 </div>
             </div>

@@ -168,16 +168,23 @@ function createCourseElement(course, number) {
     // Determine status class and text based on course status
     let statusClass, statusText;
     switch (course.status) {
+        case 'preorder':
+        case 'coming_soon':
+            statusClass = 'status-preorder';
+            statusText = 'Предзапись на следующий поток';
+            break;
+        case 'upcoming':
+            statusClass = 'status-preorder';
+            statusText = course.release_date ? `Старт ${course.release_date}` : 'Старт такого-то числа';
+            break;
         case 'available':
             statusClass = 'status-available';
             statusText = 'В доступе';
             break;
-        case 'preorder':
-            statusClass = 'status-preorder';
-            statusText = 'Предзапись';
-            if (course.subtitle) {
-                statusText = course.subtitle; // Use subtitle for preorder text like "Предзапись V поток"
-            }
+        case 'closed':
+        case 'sold_out':
+            statusClass = 'status-completed';
+            statusText = 'Продажи закрыты';
             break;
         case 'completed':
             statusClass = 'status-completed';
