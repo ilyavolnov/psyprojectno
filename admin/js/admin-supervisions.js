@@ -177,7 +177,16 @@ window.openSupervisionPopup = async function(id = null) {
     `;
     
     document.body.appendChild(popup);
-    
+
+    // Image preview update
+    document.getElementById('supervisionImage').addEventListener('input', function(e) {
+        const preview = document.getElementById('supervisionImagePreview');
+        const value = e.target.value;
+        if (value) {
+            preview.src = value.startsWith('http') ? value : '/' + value;
+        }
+    });
+
     document.getElementById('supervisionForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         await saveSupervision(id);
