@@ -282,25 +282,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeBtn) {
         closeBtn.addEventListener('click', closeSupervisionPopup);
     }
-    
+
     // Overlay click
     const overlay = document.querySelector('.supervision-popup-overlay');
     if (overlay) {
         overlay.addEventListener('click', closeSupervisionPopup);
     }
-    
+
     // ESC key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeSupervisionPopup();
         }
     });
-    
-    // All "Подробнее" buttons
-    document.querySelectorAll('.supervision-btn-outline').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const supervisionId = btn.dataset.supervisionId || 1;
-            openSupervisionPopup(supervisionId);
-        });
+
+    // Use event delegation for all "Подробнее" buttons since they are dynamically loaded
+    document.querySelector('.supervision-grid')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('.supervision-btn-outline');
+        if (btn && btn.textContent.includes('Подробнее')) {
+            const supervisionId = btn.dataset.supervisionId;
+            if (supervisionId) {
+                openSupervisionPopup(supervisionId);
+            }
+        }
     });
 });

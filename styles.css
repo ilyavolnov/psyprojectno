@@ -4646,7 +4646,7 @@ pecialists Page */
 
 .supervision-image-placeholder {
     width: 100%;
-    height: 200px;
+    height: 250px;
     overflow: hidden;
     border-radius: 12px;
     margin-bottom: 20px;
@@ -4656,6 +4656,7 @@ pecialists Page */
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: top;
     display: block;
 }
 
@@ -4836,6 +4837,10 @@ pecialists Page */
     .supervision-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .supervision-image-placeholder {
+        height: 230px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -4843,17 +4848,21 @@ pecialists Page */
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .supervision-card {
         padding: 30px 25px;
     }
-    
+
     .supervision-title {
         font-size: 20px;
     }
-    
+
     .supervision-price {
         font-size: 28px;
+    }
+
+    .supervision-image-placeholder {
+        height: 220px;
     }
 }
 

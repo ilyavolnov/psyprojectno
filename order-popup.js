@@ -150,11 +150,7 @@ window.applyPromo = async function() {
 
     try {
         // Validate promo code via API
-        const API_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:3001/api'
-            : '/api';
-
-        const response = await fetch(`${API_URL}/promo-codes/validate`, {
+        const response = await fetch(API_CONFIG.getApiUrl('promo-codes/validate'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code: promoCode })
