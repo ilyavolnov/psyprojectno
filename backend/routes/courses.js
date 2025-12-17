@@ -26,16 +26,16 @@ router.get('/courses', async (req, res) => {
         const { type } = req.query;
         let query = 'SELECT * FROM courses';
         const params = [];
-        
+
         if (type) {
             query += ' WHERE type = ?';
             params.push(type);
         }
-        
-        query += ' ORDER BY created_at DESC';
-        
+
+        query += ' ORDER BY sort_order ASC';
+
         const courses = await prepare(query).all(...params);
-        
+
         // Parse JSON fields and generate slug if missing
         const parsedCourses = courses.map(course => {
             const slug = course.slug || generateSlug(course.title);
@@ -196,6 +196,10 @@ router.put('/courses/:id', async (req, res) => {
             } else if (key === 'old_price') {
                 fields.push(`${key} = ?`);
                 values.push(updates[key] || null);
+            } else if (key === 'sort_order') {
+                // Handle sort_order specifically
+                fields.push(`${key} = ?`);
+                values.push(updates[key]);
             } else if (updates[key] !== undefined) {
                 fields.push(`${key} = ?`);
                 values.push(updates[key]);
@@ -233,7 +237,7 @@ router.put('/courses/:id', async (req, res) => {
 router.delete('/courses/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         await prepare('DELETE FROM courses WHERE id = ?').run(id);
         saveDatabase();
 
@@ -246,6 +250,45 @@ router.delete('/courses/:id', async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to delete course'
+        });
+    }
+});
+
+// Reorder courses
+router.post('/courses/reorder', async (req, res) => {
+    try {
+        const { items } = req.body; // Expected format: [{id: 1, sort_order: 0}, {id: 2, sort_order: 1}, ...]
+
+        if (!Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Items array is required and cannot be empty'
+            });
+        }
+
+        // Update sort_order for each course
+        for (const item of items) {
+            if (typeof item.id !== 'number' || typeof item.sort_order !== 'number') {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Each item must have id and sort_order as numbers'
+                });
+            }
+
+            await prepare('UPDATE courses SET sort_order = ? WHERE id = ?').run(item.sort_order, item.id);
+        }
+
+        saveDatabase();
+
+        res.json({
+            success: true,
+            message: 'Courses reordered successfully'
+        });
+    } catch (error) {
+        console.error('Error reordering courses:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Failed to reorder courses'
         });
     }
 });

@@ -29,9 +29,14 @@ window.loadWebinars = async function() {
         <div class="admin-section">
             <div class="admin-section-header">
                 <h2 class="admin-section-title">Список вебинаров (${webinars.length})</h2>
-                <button class="admin-btn admin-btn-primary" onclick="addWebinar()">
-                    ➕ Добавить вебинар
-                </button>
+                <div class="admin-section-actions">
+                    <button class="admin-btn admin-btn-secondary" onclick="openReorderPopup('webinar')">
+                        🔄 Настроить порядок
+                    </button>
+                    <button class="admin-btn admin-btn-primary" onclick="addWebinar()">
+                        ➕ Добавить вебинар
+                    </button>
+                </div>
             </div>
 
             <div class="admin-courses-grid">
@@ -75,6 +80,27 @@ window.loadWebinars = async function() {
                 <h2 class="admin-popup-title" id="webinarPopupTitle">Редактировать вебинар</h2>
                 <div class="admin-popup-body" id="webinarPopupBody">
                     <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Reorder Popup (reusing the same popup from courses) -->
+        <div class="admin-popup" id="reorderPopup">
+            <div class="admin-popup-overlay"></div>
+            <div class="admin-popup-content wide">
+                <button class="admin-popup-close" onclick="closeReorderPopup()">&times;</button>
+                <h2 class="admin-popup-title" id="reorderPopupTitle">Настроить порядок</h2>
+                <div class="admin-popup-body">
+                    <div class="admin-reorder-instructions">
+                        <p>Перетащите элементы для изменения порядка. Первые в списке будут отображаться вверху на сайте.</p>
+                    </div>
+                    <div class="admin-reorder-list" id="reorderList">
+                        <!-- Reorderable items will be loaded here -->
+                    </div>
+                    <div class="admin-form-actions" style="margin-top: 20px;">
+                        <button type="button" class="admin-btn admin-btn-secondary" onclick="closeReorderPopup()">Отмена</button>
+                        <button type="button" class="admin-btn admin-btn-primary" onclick="saveReorder()">💾 Сохранить порядок</button>
+                    </div>
                 </div>
             </div>
         </div>

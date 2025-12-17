@@ -205,11 +205,20 @@
                     <textarea id="message" name="message" rows="4" placeholder="Расскажите о вашем запросе"></textarea>
                 </div>
 
+                <div class="order-agreements">
+                    <label class="order-checkbox-label">
+                        <input type="checkbox" class="order-checkbox" id="privacyPolicy" name="privacyPolicy" required>
+                        <span>Я ознакомлен(а) и согласен(а) с <a href="privacy-policy.html" target="_blank">Политикой конфиденциальности</a></span>
+                    </label>
+                    <label class="order-checkbox-label">
+                        <input type="checkbox" class="order-checkbox" id="personalDataPolicy" name="personalDataPolicy" required>
+                        <span>Я даю согласие на <a href="personal-data-policy.html" target="_blank">обработку моих персональных данных</a></span>
+                    </label>
+                </div>
+
                 <button type="submit" class="popup-submit-btn">
                     <span>Отправить заявку</span>
                 </button>
-
-                <p class="popup-privacy">Нажимая кнопку, вы соглашаетесь с <a href="privacy-policy.html">политикой конфиденциальности</a></p>
             </form>
         </div>
     </div>

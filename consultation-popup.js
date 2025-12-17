@@ -95,6 +95,35 @@ class ConsultationPopup {
     async handleSubmit(e) {
         e.preventDefault();
 
+        // Check if privacy checkboxes exist and are required
+        const privacyPolicyCheckbox = document.getElementById('privacyPolicy');
+        const personalDataPolicyCheckbox = document.getElementById('personalDataPolicy');
+
+        // Validate checkboxes if they exist in the form (checking the common IDs used)
+        if (privacyPolicyCheckbox && !privacyPolicyCheckbox.checked) {
+            alert('Пожалуйста, подтвердите согласие с политикой конфиденциальности');
+            return;
+        }
+
+        if (personalDataPolicyCheckbox && !personalDataPolicyCheckbox.checked) {
+            alert('Пожалуйста, подтвердите согласие с политикой обработки персональных данных');
+            return;
+        }
+
+        // Also check for other possible checkbox names in different contexts
+        const orderPrivacyCheckbox = document.querySelector('input[type="checkbox"].order-checkbox[id$="Privacy"]');
+        const orderConsentCheckbox = document.querySelector('input[type="checkbox"].order-checkbox[id$="Consent"]');
+
+        if (orderPrivacyCheckbox && !orderPrivacyCheckbox.checked) {
+            alert('Пожалуйста, подтвердите согласие с политикой конфиденциальности');
+            return;
+        }
+
+        if (orderConsentCheckbox && !orderConsentCheckbox.checked) {
+            alert('Пожалуйста, подтвердите согласие с политикой обработки персональных данных');
+            return;
+        }
+
         const submitBtn = this.form.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
 

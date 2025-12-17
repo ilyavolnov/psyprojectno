@@ -421,7 +421,7 @@
                 </div>
 
                 <div class="supervision-cta" data-scroll>
-                    <a href="supervision.html" class="supervision-button"><span>Выбрать специалиста</span></a>
+                    <a href="pages/supervisions/supervision.html" class="supervision-button"><span>Выбрать специалиста</span></a>
                 </div>
             </div>
         </div>
@@ -606,16 +606,22 @@
                             <span>Отправить заявку</span>
                         </button>
 
-                        <p class="form-privacy">Нажимая кнопку, вы соглашаетесь с <a href="privacy-policy.html"
-                                class="privacy-link">политикой
-                                обработки персональных данных</a></p>
+                        <div class="order-agreements">
+                            <label class="order-checkbox-label">
+                                <input type="checkbox" class="order-checkbox" id="mainPrivacyPolicy" name="privacyPolicy" required>
+                                <span>Я ознакомлен(а) и согласен(а) с <a href="privacy-policy.html" target="_blank">Политикой конфиденциальности</a></span>
+                            </label>
+                            <label class="order-checkbox-label">
+                                <input type="checkbox" class="order-checkbox" id="mainPersonalDataPolicy" name="personalDataPolicy" required>
+                                <span>Я даю согласие на <a href="personal-data-policy.html" target="_blank">обработку моих персональных данных</a></span>
+                            </label>
+                        </div>
                     </form>
 
                     <div class="contact-info">
                         <p>Или свяжитесь с нами напрямую:</p>
                         <div class="contact-links">
-                            <a href="mailto:info@example.com" class="contact-link">info@example.com</a>
-                            <a href="tel:+79991234567" class="contact-link">+7 (999) 123-45-67</a>
+                            <a href="https://wa.me/79211880755" class="contact-link" target="_blank">WhatsApp</a>
                         </div>
                     </div>
                 </div>
@@ -676,11 +682,20 @@
                     <textarea id="message" name="message" rows="4" placeholder="Расскажите о вашем запросе"></textarea>
                 </div>
 
+                <div class="order-agreements">
+                    <label class="order-checkbox-label">
+                        <input type="checkbox" class="order-checkbox" id="privacyPolicy" name="privacyPolicy" required>
+                        <span>Я ознакомлен(а) и согласен(а) с <a href="privacy-policy.html" target="_blank">Политикой конфиденциальности</a></span>
+                    </label>
+                    <label class="order-checkbox-label">
+                        <input type="checkbox" class="order-checkbox" id="personalDataPolicy" name="personalDataPolicy" required>
+                        <span>Я даю согласие на <a href="personal-data-policy.html" target="_blank">обработку моих персональных данных</a></span>
+                    </label>
+                </div>
+
                 <button type="submit" class="popup-submit-btn">
                     <span>Отправить заявку</span>
                 </button>
-
-                <p class="popup-privacy">Нажимая кнопку, вы соглашаетесь с <a href="privacy-policy.html">политикой конфиденциальности</a></p>
             </form>
         </div>
     </div>

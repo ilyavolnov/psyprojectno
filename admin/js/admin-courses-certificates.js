@@ -29,9 +29,14 @@ window.loadCourses = async function() {
         <div class="admin-section">
             <div class="admin-section-header">
                 <h2 class="admin-section-title">Список курсов (${courses.length})</h2>
-                <button class="admin-btn admin-btn-primary" onclick="addCourse()">
-                    ➕ Добавить курс
-                </button>
+                <div class="admin-section-actions">
+                    <button class="admin-btn admin-btn-secondary" onclick="openReorderPopup('course')">
+                        🔄 Настроить порядок
+                    </button>
+                    <button class="admin-btn admin-btn-primary" onclick="addCourse()">
+                        ➕ Добавить курс
+                    </button>
+                </div>
             </div>
 
             <div class="admin-courses-grid">
@@ -75,6 +80,27 @@ window.loadCourses = async function() {
                 <h2 class="admin-popup-title" id="coursePopupTitle">Редактировать курс</h2>
                 <div class="admin-popup-body" id="coursePopupBody">
                     <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Reorder Courses Popup -->
+        <div class="admin-popup" id="reorderPopup">
+            <div class="admin-popup-overlay"></div>
+            <div class="admin-popup-content wide">
+                <button class="admin-popup-close" onclick="closeReorderPopup()">&times;</button>
+                <h2 class="admin-popup-title" id="reorderPopupTitle">Настроить порядок</h2>
+                <div class="admin-popup-body">
+                    <div class="admin-reorder-instructions">
+                        <p>Перетащите элементы для изменения порядка. Первые в списке будут отображаться вверху на сайте.</p>
+                    </div>
+                    <div class="admin-reorder-list" id="reorderList">
+                        <!-- Reorderable items will be loaded here -->
+                    </div>
+                    <div class="admin-form-actions" style="margin-top: 20px;">
+                        <button type="button" class="admin-btn admin-btn-secondary" onclick="closeReorderPopup()">Отмена</button>
+                        <button type="button" class="admin-btn admin-btn-primary" onclick="saveReorder()">💾 Сохранить порядок</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -728,6 +754,260 @@ window.saveCourseBlocks = async function(courseId) {
         console.error('Error saving course blocks:', error);
         await adminError('Ошибка сохранения блоков: ' + error.message);
     }
+};
+
+// Reordering Functions
+window.openReorderPopup = async function(type) {
+    const popup = document.getElementById('reorderPopup');
+    const title = document.getElementById('reorderPopupTitle');
+
+    if (type === 'course') {
+        title.textContent = 'Настроить порядок курсов';
+    } else if (type === 'webinar') {
+        title.textContent = 'Настроить порядок вебинаров';
+    }
+
+    // Store the type for later use
+    window.currentReorderType = type;
+
+    try {
+        // Load courses or webinars based on type
+        const response = await fetch(API_CONFIG.getApiUrl(`courses?type=${type}`));
+        const data = await response.json();
+
+        if (data.success) {
+            const items = data.data;
+
+            // Sort by sort_order to display in current order
+            const sortedItems = items.sort((a, b) => (a.sort_order || 999) - (b.sort_order || 999));
+
+            renderReorderList(sortedItems);
+            popup.classList.add('active');
+        } else {
+            await adminError('Ошибка загрузки данных: ' + data.error);
+        }
+    } catch (error) {
+        console.error('Error loading items for reordering:', error);
+        await adminError('Ошибка загрузки данных: ' + error.message);
+    }
+
+    // Close handlers
+    const overlay = popup.querySelector('.admin-popup-overlay');
+    const closeBtn = popup.querySelector('.admin-popup-close');
+
+    overlay.onclick = closeReorderPopup;
+    closeBtn.onclick = closeReorderPopup;
+};
+
+window.renderReorderList = function(items) {
+    const container = document.getElementById('reorderList');
+
+    if (items.length === 0) {
+        container.innerHTML = '<p class="admin-empty-state">Нет элементов для сортировки</p>';
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="admin-reorder-list-container">
+            ${items.map((item, index) => `
+                <div class="admin-reorder-item" data-id="${item.id}">
+                    <div class="admin-reorder-item-drag-handle" draggable="true">⋮⋮</div>
+                    <div class="admin-reorder-item-info">
+                        <span class="admin-reorder-item-number">${index + 1}.</span>
+                        <span class="admin-reorder-item-title">${item.title || 'Без названия'}</span>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    // Use setTimeout to ensure DOM is updated before initializing drag and drop
+    setTimeout(() => {
+        initReorderDragAndDrop();
+    }, 0);
+};
+
+window.initReorderDragAndDrop = function() {
+    const items = document.querySelectorAll('.admin-reorder-item');
+    let dragSrcElement = null;
+
+    function handleDragStart(e) {
+        dragSrcElement = this;
+
+        // Add dragging class
+        this.classList.add('dragging');
+
+        // Set drag effect
+        e.dataTransfer.effectAllowed = 'move';
+
+        // Set data for the drag operation
+        e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault(); // Necessary to allow drop
+        }
+
+        e.dataTransfer.dropEffect = 'move';
+
+        // Add class for styling during drag over
+        this.classList.add('drag-over');
+
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        // Add class when entering a draggable area
+        this.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+        // Remove class when leaving a draggable area
+        this.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation(); // Stops the browser from redirecting
+        }
+
+        // Don't drop on itself
+        if (dragSrcElement !== this) {
+            // Determine where to insert the dragged element
+            const rect = this.getBoundingClientRect();
+            const midpoint = (rect.bottom - rect.top) / 2;
+            const isBelow = (e.clientY - rect.top) > midpoint;
+
+            if (isBelow) {
+                this.parentNode.insertBefore(dragSrcElement, this.nextSibling);
+            } else {
+                this.parentNode.insertBefore(dragSrcElement, this);
+            }
+        }
+
+        // Remove placeholder class
+        this.classList.remove('drag-over');
+
+        return false;
+    }
+
+    function handleDragEnd(e) {
+        // Remove dragging class from all items
+        items.forEach(item => {
+            item.classList.remove('dragging', 'drag-over');
+        });
+
+        dragSrcElement = null;
+    }
+
+    items.forEach(item => {
+        const dragHandle = item.querySelector('.admin-reorder-item-drag-handle');
+
+        // Use the drag handle for drag events
+        dragHandle.setAttribute('draggable', 'true');
+
+        dragHandle.addEventListener('dragstart', function(e) {
+            dragSrcElement = item; // Use the item, not the handle
+
+            // Add dragging class to the item
+            item.classList.add('dragging');
+
+            // Set drag effect
+            e.dataTransfer.effectAllowed = 'move';
+
+            // Set data for the drag operation
+            e.dataTransfer.setData('text/html', item.innerHTML);
+        });
+
+        dragHandle.addEventListener('dragend', function(e) {
+            // Remove dragging class from all items
+            items.forEach(item => {
+                item.classList.remove('dragging', 'drag-over');
+            });
+
+            dragSrcElement = null;
+        });
+
+        // Add listeners to the item for dragover, dragenter, dragleave, and drop
+        item.addEventListener('dragover', handleDragOver);
+        item.addEventListener('dragenter', handleDragEnter);
+        item.addEventListener('dragleave', handleDragLeave);
+        item.addEventListener('drop', handleDrop);
+    });
+};
+
+window.saveReorder = async function() {
+    const items = document.querySelectorAll('.admin-reorder-item');
+
+    if (!items || items.length === 0) {
+        await adminError('Нет элементов для сохранения');
+        return;
+    }
+
+    // Create the order data
+    const orderData = [];
+    items.forEach((item, index) => {
+        const id = parseInt(item.dataset.id);
+        orderData.push({
+            id: id,
+            sort_order: index
+        });
+    });
+
+    try {
+        const response = await fetch(API_CONFIG.getApiUrl('courses/reorder'), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ items: orderData })
+        });
+
+        // Check if response is OK before parsing JSON
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Check if the response is actually JSON before parsing
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            console.error('Non-JSON response:', text);
+            throw new Error('Server returned non-JSON response');
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            await adminSuccess('Порядок сохранен успешно!');
+            closeReorderPopup();
+
+            // Reload courses or webinars depending on the current page
+            const currentType = window.currentReorderType;
+            if (currentType === 'course') {
+                loadCourses();
+            } else if (currentType === 'webinar') {
+                if (typeof loadWebinars === 'function') {
+                    loadWebinars();
+                }
+            }
+        } else {
+            await adminError('Ошибка: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error saving reorder:', error);
+        // Check if this is a JSON parsing error
+        if (error.message.includes('JSON.parse')) {
+            await adminError('Ошибка: сервер вернул некорректный JSON-ответ. Проверьте работу сервера.');
+        } else {
+            await adminError('Ошибка сохранения: ' + error.message);
+        }
+    }
+};
+
+window.closeReorderPopup = function() {
+    document.getElementById('reorderPopup').classList.remove('active');
 };
 
 

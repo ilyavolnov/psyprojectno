@@ -98,6 +98,7 @@ async function initDatabase() {
             materials TEXT,
             author_name TEXT,
             author_description TEXT,
+            sort_order INTEGER DEFAULT 999,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
@@ -158,6 +159,15 @@ async function initDatabase() {
         if (!hasOldPrice) {
             db.run('ALTER TABLE courses ADD COLUMN old_price INTEGER');
             console.log('✅ Added old_price column to courses table');
+        }
+
+        // Check if sort_order column exists
+        const hasSortOrder = tableInfo[0]?.values.some(col => col[1] === 'sort_order');
+        if (!hasSortOrder) {
+            db.run('ALTER TABLE courses ADD COLUMN sort_order INTEGER DEFAULT 999');
+            // Set default sort order based on existing id values
+            db.run('UPDATE courses SET sort_order = id WHERE sort_order = 999');
+            console.log('✅ Added sort_order column to courses table');
         }
 
         // Update has_certificate column to default to 0 (disabled) for existing functionality removal

@@ -646,6 +646,20 @@ if (mainContactForm) {
     mainContactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
+        // Check that required checkboxes are checked
+        const privacyPolicyCheckbox = document.getElementById('mainPrivacyPolicy');
+        const personalDataPolicyCheckbox = document.getElementById('mainPersonalDataPolicy');
+
+        if (!privacyPolicyCheckbox.checked) {
+            showNotification('Пожалуйста, подтвердите согласие с политикой конфиденциальности', 'error');
+            return;
+        }
+
+        if (!personalDataPolicyCheckbox.checked) {
+            showNotification('Пожалуйста, подтвердите согласие с политикой обработки персональных данных', 'error');
+            return;
+        }
+
         const submitButton = this.querySelector('.form-submit');
         const originalText = submitButton.innerHTML;
 

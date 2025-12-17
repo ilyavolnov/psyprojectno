@@ -2252,3 +2252,137 @@ body.admin-panel-page {
     padding: 12px 24px;
     font-size: 16px;
 }
+
+/* Reordering Styles */
+.admin-section-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.admin-reorder-instructions {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f0f8ff;
+    border-left: 4px solid #8B7355;
+    border-radius: 4px;
+}
+
+.admin-reorder-instructions p {
+    margin: 0;
+    color: #333;
+    line-height: 1.5;
+}
+
+.admin-reorder-list-container {
+    min-height: 200px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fafafa;
+}
+
+.admin-reorder-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    cursor: grab;
+    user-select: none;
+}
+
+.admin-reorder-item:hover {
+    border-color: #8B7355;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-reorder-item.dragging {
+    opacity: 0.6;
+    transform: scale(1.02);
+    background: #e6f3ff;
+    z-index: 100;
+}
+
+.admin-reorder-item.drag-over {
+    border: 2px dashed #8B7355 !important;
+    background-color: #f0f8ff !important;
+}
+
+.admin-reorder-item-drag-handle {
+    cursor: grab;
+    color: #999;
+    font-size: 20px;
+    user-select: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.admin-reorder-item-drag-handle:hover {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.admin-reorder-item-drag-handle:active {
+    cursor: grabbing;
+}
+
+.admin-reorder-item-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-reorder-item-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: #8B7355;
+    min-width: 20px;
+}
+
+.admin-reorder-item-title {
+    font-size: 14px;
+    color: #333;
+    flex: 1;
+}
+
+.admin-reorder-item-placeholder {
+    height: 50px;
+    border: 2px dashed #8B7355;
+    border-radius: 8px;
+    margin: 4px 0;
+    background: rgba(139, 115, 85, 0.1);
+    animation: placeholderPulse 1.5s infinite;
+}
+
+@keyframes placeholderPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.1; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-section-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-reorder-item {
+        gap: 8px;
+    }
+
+    .admin-reorder-item-number {
+        min-width: 16px;
+        font-size: 12px;
+    }
+
+    .admin-reorder-item-title {
+        font-size: 13px;
+    }
+}

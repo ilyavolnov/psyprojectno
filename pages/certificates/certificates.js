@@ -104,16 +104,16 @@ document.addEventListener('DOMContentLoaded', function() {
     certificateForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // Check that required checkboxes are checked
-        const privacyPolicyCheckbox = document.getElementById('privacyPolicy');
-        const personalDataPolicyCheckbox = document.getElementById('personalDataPolicy');
+        // Check that required checkboxes are checked (for order-checkbox style)
+        const privacyPolicyCheckbox = document.querySelector('input[type="checkbox"].order-checkbox[id$="Privacy"]');
+        const personalDataPolicyCheckbox = document.querySelector('input[type="checkbox"].order-checkbox[id$="Policy"]');
 
-        if (!privacyPolicyCheckbox.checked) {
+        if (privacyPolicyCheckbox && !privacyPolicyCheckbox.checked) {
             alert('Пожалуйста, подтвердите согласие с политикой конфиденциальности');
             return;
         }
 
-        if (!personalDataPolicyCheckbox.checked) {
+        if (personalDataPolicyCheckbox && !personalDataPolicyCheckbox.checked) {
             alert('Пожалуйста, подтвердите согласие с политикой обработки персональных данных');
             return;
         }
