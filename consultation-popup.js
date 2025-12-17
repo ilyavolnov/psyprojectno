@@ -62,11 +62,29 @@ class ConsultationPopup {
         this.popup.classList.add('active');
         document.body.style.overflow = 'hidden';
 
+        // Store the type as a property to be used during form submission
+        this.currentType = type;
+
         // Hide the request type dropdown if the type is 'supervision'
         const requestTypeGroup = document.querySelector('#requestType').closest('.form-group');
         if (type === 'supervision') {
             if (requestTypeGroup) {
                 requestTypeGroup.style.display = 'none';
+            }
+
+            // If we're in supervision mode and there's currentSupervision info (set from supervision popup)
+            if (window.currentSupervision && window.currentSupervision.title) {
+                const messageField = document.getElementById('message');
+                if (messageField) {
+                    const currentMessage = messageField.value || '';
+                    const supervisionComment = `Запись на супервизию: ${window.currentSupervision.title}`;
+
+                    if (currentMessage.trim()) {
+                        messageField.value = currentMessage + '\n' + supervisionComment;
+                    } else {
+                        messageField.value = supervisionComment;
+                    }
+                }
             }
         } else {
             // Show the request type dropdown for other types
@@ -133,6 +151,7 @@ class ConsultationPopup {
                 }
             }
 
+            // Create the base data object
             const data = {
                 name: formData.get('name'),
                 phone: formData.get('phone'),
@@ -140,6 +159,11 @@ class ConsultationPopup {
                 request_type: requestTypeValue,
                 message: formData.get('message')
             };
+
+            // If this is a supervision request and we have supervision info, include the supervision_id
+            if (this.currentType === 'supervision' && window.currentSupervision && window.currentSupervision.id) {
+                data.supervision_id = window.currentSupervision.id;
+            }
 
             const response = await fetch(API_CONFIG.getApiUrl('requests'), {
                 method: 'POST',
@@ -159,7 +183,7 @@ class ConsultationPopup {
                 this.form.reset();
                 this.close();
             } else {
-                throw new Error(result.message || 'Ошибка при отправке заявки');
+                throw new Error(result.message || 'Ошибка при отправки заявки');
             }
 
         } catch (error) {
