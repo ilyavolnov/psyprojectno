@@ -62,11 +62,23 @@ class ConsultationPopup {
         this.popup.classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        // Pre-select request type if provided
-        if (type) {
-            const select = document.getElementById('requestType');
-            if (select) {
-                select.value = type;
+        // Hide the request type dropdown if the type is 'supervision'
+        const requestTypeGroup = document.querySelector('#requestType').closest('.form-group');
+        if (type === 'supervision') {
+            if (requestTypeGroup) {
+                requestTypeGroup.style.display = 'none';
+            }
+        } else {
+            // Show the request type dropdown for other types
+            if (requestTypeGroup) {
+                requestTypeGroup.style.display = 'block';
+            }
+            // Pre-select request type if provided (not supervision)
+            if (type) {
+                const select = document.getElementById('requestType');
+                if (select) {
+                    select.value = type;
+                }
             }
         }
 
@@ -104,11 +116,28 @@ class ConsultationPopup {
             submitBtn.innerHTML = '<span>Отправка...</span>';
 
             const formData = new FormData(this.form);
+
+            // Get the request type from the dropdown or set to 'supervision' if it's hidden
+            let requestTypeValue = formData.get('requestType');
+            const requestTypeElement = document.getElementById('requestType');
+            const requestTypeGroup = requestTypeElement.closest('.form-group');
+
+            // Check if the request type group is hidden (which means it's a supervision form)
+            if (requestTypeGroup && requestTypeGroup.style.display === 'none') {
+                requestTypeValue = 'supervision';
+            } else if (!requestTypeValue) {
+                // If empty and not hidden, use default or throw an error
+                if (requestTypeElement.required) {
+                    alert('Пожалуйста, выберите тип заявки');
+                    return;
+                }
+            }
+
             const data = {
                 name: formData.get('name'),
                 phone: formData.get('phone'),
                 email: formData.get('email'),
-                request_type: formData.get('requestType'),
+                request_type: requestTypeValue,
                 message: formData.get('message')
             };
 

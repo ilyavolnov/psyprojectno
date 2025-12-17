@@ -62,11 +62,23 @@ class ConsultationPopup {
         this.popup.classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        // Pre-select request type if provided
-        if (type) {
-            const select = document.getElementById('requestType');
-            if (select) {
-                select.value = type;
+        // Hide the request type dropdown if the type is 'supervision'
+        const requestTypeGroup = document.querySelector('#requestType').closest('.form-group');
+        if (type === 'supervision') {
+            if (requestTypeGroup) {
+                requestTypeGroup.style.display = 'none';
+            }
+        } else {
+            // Show the request type dropdown for other types
+            if (requestTypeGroup) {
+                requestTypeGroup.style.display = 'block';
+            }
+            // Pre-select request type if provided (not supervision)
+            if (type) {
+                const select = document.getElementById('requestType');
+                if (select) {
+                    select.value = type;
+                }
             }
         }
 
@@ -95,35 +107,6 @@ class ConsultationPopup {
     async handleSubmit(e) {
         e.preventDefault();
 
-        // Check if privacy checkboxes exist and are required
-        const privacyPolicyCheckbox = document.getElementById('privacyPolicy');
-        const personalDataPolicyCheckbox = document.getElementById('personalDataPolicy');
-
-        // Validate checkboxes if they exist in the form (checking the common IDs used)
-        if (privacyPolicyCheckbox && !privacyPolicyCheckbox.checked) {
-            alert('Пожалуйста, подтвердите согласие с политикой конфиденциальности');
-            return;
-        }
-
-        if (personalDataPolicyCheckbox && !personalDataPolicyCheckbox.checked) {
-            alert('Пожалуйста, подтвердите согласие с политикой обработки персональных данных');
-            return;
-        }
-
-        // Also check for other possible checkbox names in different contexts
-        const orderPrivacyCheckbox = document.querySelector('input[type="checkbox"].order-checkbox[id$="Privacy"]');
-        const orderConsentCheckbox = document.querySelector('input[type="checkbox"].order-checkbox[id$="Consent"]');
-
-        if (orderPrivacyCheckbox && !orderPrivacyCheckbox.checked) {
-            alert('Пожалуйста, подтвердите согласие с политикой конфиденциальности');
-            return;
-        }
-
-        if (orderConsentCheckbox && !orderConsentCheckbox.checked) {
-            alert('Пожалуйста, подтвердите согласие с политикой обработки персональных данных');
-            return;
-        }
-
         const submitBtn = this.form.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
 
@@ -133,15 +116,31 @@ class ConsultationPopup {
             submitBtn.innerHTML = '<span>Отправка...</span>';
 
             const formData = new FormData(this.form);
+
+            // Get the request type from the dropdown or set to 'supervision' if it's hidden
+            let requestTypeValue = formData.get('requestType');
+            const requestTypeElement = document.getElementById('requestType');
+            const requestTypeGroup = requestTypeElement.closest('.form-group');
+
+            // Check if the request type group is hidden (which means it's a supervision form)
+            if (requestTypeGroup && requestTypeGroup.style.display === 'none') {
+                requestTypeValue = 'supervision';
+            } else if (!requestTypeValue) {
+                // If empty and not hidden, use default or throw an error
+                if (requestTypeElement.required) {
+                    alert('Пожалуйста, выберите тип заявки');
+                    return;
+                }
+            }
+
             const data = {
                 name: formData.get('name'),
                 phone: formData.get('phone'),
                 email: formData.get('email'),
-                request_type: formData.get('requestType'),
+                request_type: requestTypeValue,
                 message: formData.get('message')
             };
 
-            // Send to backend
             const response = await fetch(API_CONFIG.getApiUrl('requests'), {
                 method: 'POST',
                 headers: {
